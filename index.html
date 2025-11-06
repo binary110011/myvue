@@ -1,81 +1,424 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>我的首页</title>
-  <style>
-    /* 背景渐变 */
-    body {
-      margin: 0;
-      font-family: "Segoe UI", Arial, sans-serif;
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      color: #333;
-    }
-
-    /* 居中卡片 */
-    .card {
-      background: white;
-      border-radius: 20px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-      padding: 40px;
-      max-width: 400px;
-      text-align: center;
-      animation: fadeIn 1s ease-in-out;
-    }
-
-    .card h1 {
-      margin: 0 0 20px;
-      font-size: 2em;
-      color: #4a4a4a;
-    }
-
-    .card p {
-      font-size: 1.1em;
-      line-height: 1.6;
-      color: #666;
-      margin-bottom: 30px;
-    }
-
-    /* 按钮 */
-    .btn {
-      display: inline-block;
-      padding: 12px 25px;
-      border-radius: 30px;
-      text-decoration: none;
-      font-size: 1em;
-      color: white;
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-
-    .btn:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 20px rgba(118, 75, 162, 0.4);
-    }
-
-    /* 动画 */
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(30px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人简历 - 政沅同学</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+        
+        .header .title {
+            font-size: 1.3em;
+            opacity: 0.9;
+            margin-bottom: 15px;
+        }
+        
+        .header .contact {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            font-size: 0.95em;
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .section {
+            margin-bottom: 35px;
+        }
+        
+        .section-title {
+            font-size: 1.4em;
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        
+        .item {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+            margin-bottom: 0;
+        }
+        
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .item-title {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .item-subtitle {
+            font-size: 0.95em;
+            color: #667eea;
+            font-weight: 600;
+        }
+        
+        .item-date {
+            color: #999;
+            font-size: 0.9em;
+        }
+        
+        .item-description {
+            color: #666;
+            line-height: 1.6;
+            font-size: 0.95em;
+        }
+        
+        .skills-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .skill-category {
+            background: #f8f9ff;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .skill-category-title {
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .skill-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .skill-tag {
+            background: white;
+            border: 1px solid #667eea;
+            color: #667eea;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            transition: all 0.3s;
+        }
+        
+        .skill-tag:hover {
+            background: #667eea;
+            color: white;
+        }
+        
+        .print-button {
+            text-align: center;
+            padding: 20px;
+            background: #f8f9fa;
+            border-top: 1px solid #eee;
+        }
+        
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        button:hover {
+            background: #764ba2;
+            transform: scale(1.05);
+        }
+        
+        @media print {
+            body {
+                background: none;
+                padding: 0;
+            }
+            
+            .container {
+                box-shadow: none;
+                max-width: 100%;
+            }
+            
+            .print-button {
+                display: none;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .header {
+                padding: 25px;
+            }
+            
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .item-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div class="card">
-    <h1>欢迎来到"阮成达"主页</h1>
-    <p>这是一个简洁优雅的网页示例，你可以在这里展示个人简介、作品或者任何你想分享的内容。</p>
-    <a href="#" class="btn">进入更多内容</a>
-  </div>
-  
-    <script>
-    window.onload = function () {
-      alert("阮成达页面已加载成功，欢迎访问！ 测试版");
-    };
-  </script>
+    <div class="container">
+        <div class="header">
+            <h1>张三</h1>
+            <div class="title">全栈开发工程师</div>
+            <div class="contact">
+                <div class="contact-item">
+                    <span>📧</span>
+                    <span>zhangsan@email.com</span>
+                </div>
+                <div class="contact-item">
+                    <span>📱</span>
+                    <span>+86 138-1234-5678</span>
+                </div>
+                <div class="contact-item">
+                    <span>📍</span>
+                    <span>北京市朝阳区</span>
+                </div>
+                <div class="contact-item">
+                    <span>💼</span>
+                    <span>github.com/zhangsan</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="content">
+            <!-- 个人介绍 -->
+            <div class="section">
+                <div class="section-title">👤 个人介绍</div>
+                <div class="item-description">
+                    有 5 年以上全栈开发经验，精通前端和后端技术栈。曾在多个互联网公司主导过大型项目的开发，具有良好的代码规范和团队协作能力。热爱学习新技术，积极参与开源社区。
+                </div>
+            </div>
+            
+            <!-- 工作经历 -->
+            <div class="section">
+                <div class="section-title">💼 工作经历</div>
+                
+                <div class="item">
+                    <div class="item-header">
+                        <div>
+                            <div class="item-title">高级开发工程师</div>
+                            <div class="item-subtitle">阿里巴巴</div>
+                        </div>
+                        <div class="item-date">2021.06 - 至今</div>
+                    </div>
+                    <div class="item-description">
+                        • 负责电商平台核心系统的前端架构设计和开发<br>
+                        • 带领团队优化页面加载速度，性能提升 40%<br>
+                        • 建立前端组件库，提高代码复用率 60%<br>
+                        • 参与后端 API 设计和数据库优化
+                    </div>
+                </div>
+                
+                <div class="item">
+                    <div class="item-header">
+                        <div>
+                            <div class="item-title">开发工程师</div>
+                            <div class="item-subtitle">字节跳动</div>
+                        </div>
+                        <div class="item-date">2019.03 - 2021.05</div>
+                    </div>
+                    <div class="item-description">
+                        • 开发内部管理系统，服务 500+ 用户<br>
+                        • 实现实时数据推送功能，用户交互延迟降至 200ms<br>
+                        • 参与代码审查和技术分享
+                    </div>
+                </div>
+                
+                <div class="item">
+                    <div class="item-header">
+                        <div>
+                            <div class="item-title">初级开发工程师</div>
+                            <div class="item-subtitle">某互联网公司</div>
+                        </div>
+                        <div class="item-date">2018.07 - 2019.02</div>
+                    </div>
+                    <div class="item-description">
+                        • 维护和迭代现有产品功能<br>
+                        • 修复 Bug 和性能优化<br>
+                        • 学习前端工程化相关知识
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 教育背景 -->
+            <div class="section">
+                <div class="section-title">🎓 教育背景</div>
+                
+                <div class="item">
+                    <div class="item-header">
+                        <div>
+                            <div class="item-title">计算机科学与技术</div>
+                            <div class="item-subtitle">清华大学</div>
+                        </div>
+                        <div class="item-date">2014.09 - 2018.06</div>
+                    </div>
+                    <div class="item-description">
+                        • 本科学位，GPA 3.8/4.0<br>
+                        • 获得校级奖学金三次<br>
+                        • 曾获全国大学生程序设计竞赛铜奖
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 技能 -->
+            <div class="section">
+                <div class="section-title">🛠️ 技能</div>
+                <div class="skills-container">
+                    <div class="skill-category">
+                        <div class="skill-category-title">前端技术</div>
+                        <div class="skill-list">
+                            <div class="skill-tag">HTML/CSS</div>
+                            <div class="skill-tag">JavaScript</div>
+                            <div class="skill-tag">React</div>
+                            <div class="skill-tag">Vue</div>
+                            <div class="skill-tag">TypeScript</div>
+                            <div class="skill-tag">Webpack</div>
+                        </div>
+                    </div>
+                    
+                    <div class="skill-category">
+                        <div class="skill-category-title">后端技术</div>
+                        <div class="skill-list">
+                            <div class="skill-tag">Node.js</div>
+                            <div class="skill-tag">Python</div>
+                            <div class="skill-tag">MySQL</div>
+                            <div class="skill-tag">Redis</div>
+                            <div class="skill-tag">MongoDB</div>
+                            <div class="skill-tag">Docker</div>
+                        </div>
+                    </div>
+                    
+                    <div class="skill-category">
+                        <div class="skill-category-title">工具与平台</div>
+                        <div class="skill-list">
+                            <div class="skill-tag">Git</div>
+                            <div class="skill-tag">Linux</div>
+                            <div class="skill-tag">AWS</div>
+                            <div class="skill-tag">Jenkins</div>
+                            <div class="skill-tag">Jira</div>
+                            <div class="skill-tag">GitLab</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 项目经历 -->
+            <div class="section">
+                <div class="section-title">🚀 项目经历</div>
+                
+                <div class="item">
+                    <div class="item-header">
+                        <div>
+                            <div class="item-title">电商推荐系统</div>
+                        </div>
+                        <div class="item-date">2022.01 - 2022.12</div>
+                    </div>
+                    <div class="item-description">
+                        • 使用 React + TypeScript 构建推荐引擎前端<br>
+                        • Node.js + Python 后端，基于用户行为的个性化推荐<br>
+                        • 使用 Redis 缓存优化，QPS 从 1000 提升到 5000<br>
+                        • 项目上线后转化率提升 25%
+                    </div>
+                </div>
+                
+                <div class="item">
+                    <div class="item-header">
+                        <div>
+                            <div class="item-title">实时协作编辑工具</div>
+                        </div>
+                        <div class="item-date">2021.06 - 2021.11</div>
+                    </div>
+                    <div class="item-description">
+                        • 使用 WebSocket 实现多用户实时同步<br>
+                        • 支持 10,000+ 并发连接<br>
+                        • 完整的版本控制和权限系统<br>
+                        • 获得公司内部创新大赛一等奖
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 获奖与认证 -->
+            <div class="section">
+                <div class="section-title">🏆 获奖与认证</div>
+                
+                <div class="item">
+                    <div class="item-description">
+                        • 2022 年度优秀员工<br>
+                        • AWS Solutions Architect Associate 认证<br>
+                        • Kubernetes 认证工程师 (CKA)
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="print-button">
+            <button onclick="window.print()">🖨️ 打印或导出为 PDF</button>
+        </div>
+    </div>
 </body>
 </html>
