@@ -126,13 +126,62 @@
             font-size: 0.95em;
         }
         
-        @media (max-width: 768px) {
-            .header h1 {
-                font-size: 2em;
+      /* ============== 新增广告样式 ============== */
+        .fixed-ad {
+            position: fixed; /* 关键:固定定位,使其不随滚动条移动 */
+            bottom: 30px;    /* 距离底部 30px */
+            right: 30px;     /* 距离右侧 30px */
+            width: 150px;    /* 广告宽度 */
+            background-color: #f44336; /* 红色背景,吸引注意 */
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            text-align: center;
+            z-index: 1000;   /* 确保它位于其他元素之上 */
+            font-size: 0.9em;
+            line-height: 1.4;
+            animation: bounce 2s ease-in-out infinite, flashBg 1.5s ease-in-out infinite;
+        }
+        
+        .fixed-ad:hover {
+            animation-play-state: paused;
+            transform: scale(1.1);
+        }
+        
+        /* 跳动动画 */
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0) scale(1);
             }
-            
-            .converter-grid {
-                grid-template-columns: 1fr;
+            25% {
+                transform: translateY(-20px) scale(1.05);
+            }
+            50% {
+                transform: translateY(0) scale(1);
+            }
+            75% {
+                transform: translateY(-10px) scale(1.02);
+            }
+        }
+        
+        /* 背景颜色闪烁动画 */
+        @keyframes flashBg {
+            0%, 100% {
+                background-color: #f44336;
+                box-shadow: 0 4px 12px rgba(244, 67, 54, 0.6);
+            }
+            25% {
+                background-color: #ff5722;
+                box-shadow: 0 6px 20px rgba(255, 87, 34, 0.8);
+            }
+            50% {
+                background-color: #ff9800;
+                box-shadow: 0 8px 25px rgba(255, 152, 0, 0.9);
+            }
+            75% {
+                background-color: #ff5722;
+                box-shadow: 0 6px 20px rgba(255, 87, 34, 0.8);
             }
         }
     </style>
@@ -145,7 +194,6 @@
         </div>
         
         <div class="converter-grid">
-            <!-- 长度单位换算器 - 已完成 -->
             <a href="length.html" class="converter-card active">
                 <div class="card-icon">📏</div>
                 <div class="card-title">长度单位换算器</div>
@@ -153,24 +201,21 @@
                 <span class="card-status status-active">✓ 可用</span>
             </a>
             
-            <!-- 面积单位换算器 -->
-                <a href="area.html" class="converter-card active">
+            <a href="area.html" class="converter-card active">
                 <div class="card-icon">📐</div>
                 <div class="card-title">面积单位换算器</div>
                 <div class="card-description">平方米、亩、公顷等单位转换</div>
                   <span class="card-status status-active">✓ 可用</span>
              </a>
             
-            <!-- 重量单位换算器 -->
-         <a href="weight.html" class="converter-card active">
+            <a href="weight.html" class="converter-card active">
     <div class="card-icon">⚖️</div>
     <div class="card-title">重量单位换算器</div>
     <div class="card-description">千克、磅、吨等单位转换</div>
     <span class="card-status status-active">✓ 可用</span>
 </a>
             
-            <!-- 体积单位换算器 -->
-               <a href="chinese-number.html" class="converter-card active">
+            <a href="chinese-number.html" class="converter-card active">
     <div class="card-icon">🔢</div>
     <div class="card-title">中文大小写换算器</div>
     <div class="card-description">报销专属，123 → 壹佰贰拾叁</div>
@@ -178,7 +223,6 @@
    </a>
           
             
-            <!-- 密度单位换算器 -->
             <div class="converter-card inactive">
                 <div class="card-icon">🔬</div>
                 <div class="card-title">密度单位换算器</div>
@@ -186,7 +230,6 @@
                 <span class="card-status status-coming">即将推出</span>
             </div>
             
-            <!-- 温度单位换算器 -->
             <div class="converter-card inactive">
                 <div class="card-icon">🌡️</div>
                 <div class="card-title">温度单位换算器</div>
@@ -194,7 +237,6 @@
                 <span class="card-status status-coming">即将推出</span>
             </div>
             
-            <!-- 压力单位换算器 -->
             <div class="converter-card inactive">
                 <div class="card-icon">💨</div>
                 <div class="card-title">压力单位换算器</div>
@@ -202,7 +244,6 @@
                 <span class="card-status status-coming">即将推出</span>
             </div>
             
-            <!-- 字节单位换算器 -->
             <div class="converter-card inactive">
                 <div class="card-icon">💾</div>
                 <div class="card-title">字节单位换算器</div>
@@ -210,7 +251,6 @@
                 <span class="card-status status-coming">即将推出</span>
             </div>
             
-            <!-- 时间单位换算器 -->
             <div class="converter-card inactive">
                 <div class="card-icon">⏰</div>
                 <div class="card-title">时间单位换算器</div>
@@ -224,5 +264,13 @@
             <p style="margin-top: 10px; font-size: 0.85em;">持续更新中 | 更多换算器即将上线</p>
         </div>
     </div>
-</body>
+    
+  <div class="fixed-ad">
+  <p>🎉 **项目内部通知**</p>
+    <p>视觉项目组招聘 C# 工程师！</p>
+    <a href="your_ad_landing_page.html" class="ad-link">
+        <img src="1.png" alt="视觉项目组招聘广告" style="width: 100%; height: auto; display: block; border-radius: 8px;">
+    </a>
+</div>
+    </body>
 </html>
