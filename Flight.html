@@ -399,12 +399,13 @@
                 boss2: new Image()
             };
             
-            // 设置图片源
+            // 设置图片源 - 使用在线图片作为替代
             images.player.src = './img/wo.png';
             images.enemy1.src = './img/3.png';
             images.enemy2.src = './img/4.png';
             images.enemy3.src = './img/5.png';
             images.boss.src = './img/B.png';
+            images.boss2.src = './img/2.png';
             
             // 玩家飞机
             const player = {
@@ -577,7 +578,7 @@
                 }
             }
             
-            // 生成敌机
+            // 生成敌机 - 增强版
             function spawnEnemy() {
                 const enemyTypes = ['enemy1', 'enemy2', 'enemy3'];
                 const type = enemyTypes[Math.floor(Math.random() * enemyTypes.length)];
@@ -591,6 +592,18 @@
                 const speed = baseSpeed + Math.min(stage * 0.2, 1.5);
                 const health = baseHealth + Math.min(stage * 8, 60);
                 
+                // 随机选择移动模式
+                const movePatterns = ['straight', 'zigzag', 'chase', 'hover', 'teleport', 'spiral'];
+                const movePattern = movePatterns[Math.floor(Math.random() * movePatterns.length)];
+                
+                // 随机选择攻击模式
+                const attackPatterns = ['single', 'double', 'triple', 'aimed', 'spread', 'burst'];
+                const attackPattern = attackPatterns[Math.floor(Math.random() * attackPatterns.length)];
+                
+                // 随机选择特殊技能
+                const specialSkills = ['none', 'shield', 'speedBoost', 'summon', 'kamikaze', 'invisible'];
+                const specialSkill = specialSkills[Math.floor(Math.random() * specialSkills.length)];
+                
                 enemies.push({
                     x: Math.random() * (canvas.width - size),
                     y: -size,
@@ -602,9 +615,17 @@
                     maxHealth: health,
                     shootTimer: 0,
                     shootInterval: Math.random() * 80 + 120 - Math.min(stage * 5, 40),
-                    attackPattern: { type: 'single' },
-                    movePattern: { type: 'straight' },
-                    moveTimer: 0
+                    attackPattern: { type: attackPattern, timer: 0 },
+                    movePattern: { type: movePattern, timer: 0, direction: 1, targetX: player.x, targetY: player.y },
+                    moveTimer: 0,
+                    specialSkill: specialSkill,
+                    skillTimer: 0,
+                    skillActive: false,
+                    shieldActive: false,
+                    invisible: false,
+                    invisibleTimer: 0,
+                    speedBoost: false,
+                    speedBoostTimer: 0
                 });
             }
             
@@ -635,7 +656,13 @@
                     healInterval: 300,
                     isSecondPhase: false,
                     phaseTransition: false,
-                    phaseTransitionTimer: 0
+                    phaseTransitionTimer: 0,
+                    shieldActive: false,
+                    shieldTimer: 0,
+                    laserAttackTimer: 0,
+                    laserAttackInterval: 400,
+                    summonTimer: 0,
+                    summonInterval: 200
                 };
             }
             
@@ -665,22 +692,111 @@
                 });
             }
             
-            // 敌机发射子弹
+            // 敌机发射子弹 - 增强版
             function enemyShoot(enemy) {
                 const centerX = enemy.x + enemy.width / 2;
                 const centerY = enemy.y + enemy.height;
                 
-                enemyBullets.push({
-                    x: centerX,
-                    y: centerY,
-                    width: 6,
-                    height: 12,
-                    speed: 5,
-                    color: '#ff6666'
-                });
+                switch(enemy.attackPattern.type) {
+                    case 'single':
+                        enemyBullets.push({
+                            x: centerX,
+                            y: centerY,
+                            width: 6,
+                            height: 12,
+                            speed: 5,
+                            color: '#ff6666'
+                        });
+                        break;
+                    case 'double':
+                        enemyBullets.push({
+                            x: centerX - 10,
+                            y: centerY,
+                            width: 6,
+                            height: 12,
+                            speed: 5,
+                            color: '#ff6666'
+                        });
+                        enemyBullets.push({
+                            x: centerX + 10,
+                            y: centerY,
+                            width: 6,
+                            height: 12,
+                            speed: 5,
+                            color: '#ff6666'
+                        });
+                        break;
+                    case 'triple':
+                        enemyBullets.push({
+                            x: centerX - 15,
+                            y: centerY,
+                            width: 6,
+                            height: 12,
+                            speed: 5,
+                            color: '#ff6666'
+                        });
+                        enemyBullets.push({
+                            x: centerX,
+                            y: centerY,
+                            width: 6,
+                            height: 12,
+                            speed: 5,
+                            color: '#ff6666'
+                        });
+                        enemyBullets.push({
+                            x: centerX + 15,
+                            y: centerY,
+                            width: 6,
+                            height: 12,
+                            speed: 5,
+                            color: '#ff6666'
+                        });
+                        break;
+                    case 'aimed':
+                        const angleToPlayer = Math.atan2(
+                            player.y + player.height / 2 - centerY,
+                            player.x + player.width / 2 - centerX
+                        );
+                        enemyBullets.push({
+                            x: centerX,
+                            y: centerY,
+                            width: 8,
+                            height: 8,
+                            speed: 6,
+                            color: '#ff3333',
+                            angle: angleToPlayer
+                        });
+                        break;
+                    case 'spread':
+                        for (let i = -2; i <= 2; i++) {
+                            enemyBullets.push({
+                                x: centerX,
+                                y: centerY,
+                                width: 6,
+                                height: 12,
+                                speed: 5,
+                                color: '#ff6666',
+                                angle: i * 0.2
+                            });
+                        }
+                        break;
+                    case 'burst':
+                        for (let i = 0; i < 3; i++) {
+                            enemyBullets.push({
+                                x: centerX,
+                                y: centerY,
+                                width: 6,
+                                height: 12,
+                                speed: 5,
+                                color: '#ff6666',
+                                delay: i * 5
+                            });
+                        }
+                        break;
+                }
             }
             
-            // BOSS发射子弹
+            // BOSS发射子弹 - 增强版
             function bossShoot() {
                 if (!boss) return;
                 
@@ -712,6 +828,30 @@
                         });
                     }
                     boss.specialAttackTimer = 0;
+                }
+                
+                // BOSS激光攻击
+                boss.laserAttackTimer++;
+                if (boss.laserAttackTimer >= boss.laserAttackInterval) {
+                    // 发射激光
+                    enemyBullets.push({
+                        x: centerX - 50,
+                        y: centerY,
+                        width: 100,
+                        height: 20,
+                        speed: 8,
+                        color: '#ff00ff',
+                        isLaser: true,
+                        damage: 20
+                    });
+                    boss.laserAttackTimer = 0;
+                }
+                
+                // BOSS召唤小怪
+                boss.summonTimer++;
+                if (boss.summonTimer >= boss.summonInterval) {
+                    spawnMinion();
+                    boss.summonTimer = 0;
                 }
                 
                 // BOSS攻击模式
@@ -791,35 +931,154 @@
                     boss.attackPattern = (boss.attackPattern + 1) % 4;
                     boss.patternTimer = 0;
                 }
+                
+                // BOSS护盾
+                if (boss.isSecondPhase && !boss.shieldActive && Math.random() < 0.01) {
+                    boss.shieldActive = true;
+                    boss.shieldTimer = 120;
+                }
+                
+                if (boss.shieldActive) {
+                    boss.shieldTimer--;
+                    if (boss.shieldTimer <= 0) {
+                        boss.shieldActive = false;
+                    }
+                }
             }
             
             // 生成BOSS的小怪
             function spawnMinion() {
-                if (boss && boss.minionsSpawned < 3) {
+                if (boss && boss.minionsSpawned < 5) {
                     for (let i = 0; i < 2; i++) {
                         enemies.push({
                             x: boss.x + Math.random() * boss.width,
                             y: boss.y + boss.height,
                             width: 30,
                             height: 30,
-                            speed: 2,
+                            speed: 3,
                             type: 'enemy1',
                             health: 50,
                             maxHealth: 50,
                             shootTimer: 0,
-                            shootInterval: 100,
+                            shootInterval: 80,
                             attackPattern: { type: 'aimed' },
                             movePattern: { type: 'chase', targetX: player.x },
-                            moveTimer: 0
+                            moveTimer: 0,
+                            specialSkill: 'kamikaze',
+                            skillTimer: 0,
+                            skillActive: false
                         });
                     }
                     boss.minionsSpawned++;
                 }
             }
             
-            // 更新敌机移动
+            // 更新敌机移动 - 增强版
             function updateEnemyMovement(enemy) {
-                enemy.y += enemy.speed;
+                enemy.moveTimer++;
+                
+                switch(enemy.movePattern.type) {
+                    case 'straight':
+                        enemy.y += enemy.speed;
+                        break;
+                    case 'zigzag':
+                        enemy.y += enemy.speed;
+                        enemy.x += Math.sin(enemy.moveTimer * 0.1) * 3;
+                        break;
+                    case 'chase':
+                        enemy.y += enemy.speed;
+                        if (enemy.x < player.x) enemy.x += 1;
+                        if (enemy.x > player.x) enemy.x -= 1;
+                        break;
+                    case 'hover':
+                        enemy.y += enemy.speed * 0.5;
+                        enemy.x += Math.sin(enemy.moveTimer * 0.05) * 4;
+                        break;
+                    case 'teleport':
+                        enemy.y += enemy.speed;
+                        if (enemy.moveTimer % 60 === 0) {
+                            enemy.x = Math.random() * (canvas.width - enemy.width);
+                        }
+                        break;
+                    case 'spiral':
+                        enemy.y += enemy.speed * 0.7;
+                        const radius = 50;
+                        enemy.x = canvas.width / 2 + Math.cos(enemy.moveTimer * 0.05) * radius;
+                        break;
+                }
+                
+                // 处理特殊技能
+                enemy.skillTimer++;
+                switch(enemy.specialSkill) {
+                    case 'shield':
+                        if (enemy.skillTimer >= 100 && !enemy.shieldActive) {
+                            enemy.shieldActive = true;
+                            enemy.skillTimer = 0;
+                        }
+                        if (enemy.shieldActive && enemy.skillTimer >= 150) {
+                            enemy.shieldActive = false;
+                            enemy.skillTimer = 0;
+                        }
+                        break;
+                    case 'speedBoost':
+                        if (enemy.skillTimer >= 120 && !enemy.speedBoost) {
+                            enemy.speedBoost = true;
+                            enemy.speed *= 2;
+                            enemy.skillTimer = 0;
+                        }
+                        if (enemy.speedBoost && enemy.skillTimer >= 80) {
+                            enemy.speedBoost = false;
+                            enemy.speed /= 2;
+                            enemy.skillTimer = 0;
+                        }
+                        break;
+                    case 'summon':
+                        if (enemy.skillTimer >= 200) {
+                            // 召唤一个小敌机
+                            enemies.push({
+                                x: enemy.x,
+                                y: enemy.y,
+                                width: 20,
+                                height: 20,
+                                speed: 2,
+                                type: 'enemy1',
+                                health: 20,
+                                maxHealth: 20,
+                                shootTimer: 0,
+                                shootInterval: 120,
+                                attackPattern: { type: 'single' },
+                                movePattern: { type: 'straight' },
+                                moveTimer: 0
+                            });
+                            enemy.skillTimer = 0;
+                        }
+                        break;
+                    case 'kamikaze':
+                        if (enemy.skillTimer >= 150) {
+                            // 自杀式攻击 - 冲向玩家
+                            enemy.movePattern.type = 'chase';
+                            enemy.speed = 5;
+                            enemy.skillActive = true;
+                        }
+                        break;
+                    case 'invisible':
+                        if (enemy.skillTimer >= 100 && !enemy.invisible) {
+                            enemy.invisible = true;
+                            enemy.invisibleTimer = 60;
+                            enemy.skillTimer = 0;
+                        }
+                        if (enemy.invisible) {
+                            enemy.invisibleTimer--;
+                            if (enemy.invisibleTimer <= 0) {
+                                enemy.invisible = false;
+                            }
+                        }
+                        break;
+                }
+                
+                // 边界检查
+                if (enemy.x < 0) enemy.x = 0;
+                if (enemy.x > canvas.width - enemy.width) enemy.x = canvas.width - enemy.width;
             }
             
             // 更新BOSS移动
@@ -1020,7 +1279,7 @@
                         }
                         
                         // BOSS在第二阶段生成小怪
-                        if (boss.isSecondPhase && boss.minionsSpawned < 3 && Math.random() < 0.01) {
+                        if (boss.isSecondPhase && boss.minionsSpawned < 5 && Math.random() < 0.01) {
                             spawnMinion();
                         }
                     }
@@ -1042,6 +1301,13 @@
                 // 更新敌机子弹
                 for (let i = enemyBullets.length - 1; i >= 0; i--) {
                     const bullet = enemyBullets[i];
+                    
+                    // 处理延迟发射的子弹
+                    if (bullet.delay > 0) {
+                        bullet.delay--;
+                        continue;
+                    }
+                    
                     if (bullet.angle !== undefined) {
                         bullet.x += Math.cos(bullet.angle) * bullet.speed;
                         bullet.y += Math.sin(bullet.angle) * bullet.speed;
@@ -1051,7 +1317,7 @@
                     
                     if (checkCollision(bullet, player)) {
                         if (!hasShield && !isInvincible) {
-                            playerHealth -= 10;
+                            playerHealth -= bullet.damage || 10;
                             healthFill.style.width = playerHealth + '%';
                             createSound(200, 0.1, 'hit');
                         }
@@ -1114,13 +1380,18 @@
                 // 检查子弹与敌机碰撞
                 for (let i = bullets.length - 1; i >= 0; i--) {
                     for (let j = enemies.length - 1; j >= 0; j--) {
-                        if (checkCollision(bullets[i], enemies[j])) {
-                            enemies[j].health -= playerDamage;
+                        const enemy = enemies[j];
+                        if (enemy.invisible) continue;
+                        
+                        if (checkCollision(bullets[i], enemy)) {
+                            if (!enemy.shieldActive) {
+                                enemy.health -= playerDamage;
+                            }
                             bullets.splice(i, 1);
-                            if (enemies[j].health <= 0) {
-                                createExplosion(enemies[j].x + enemies[j].width / 2, enemies[j].y + enemies[j].height / 2);
+                            if (enemy.health <= 0) {
+                                createExplosion(enemy.x + enemy.width / 2, enemy.y + enemy.height / 2);
                                 if (Math.random() < 0.3) {
-                                    spawnPowerup(enemies[j].x + enemies[j].width / 2, enemies[j].y + enemies[j].height / 2);
+                                    spawnPowerup(enemy.x + enemy.width / 2, enemy.y + enemy.height / 2);
                                 }
                                 score += 10;
                                 scoreElement.textContent = score;
@@ -1145,7 +1416,9 @@
                     }
                     
                     if (boss && checkCollision(bullets[i], boss)) {
-                        boss.health -= playerDamage;
+                        if (!boss.shieldActive) {
+                            boss.health -= playerDamage;
+                        }
                         bullets.splice(i, 1);
                         break;
                     }
@@ -1155,12 +1428,17 @@
                 for (let i = laserBeams.length - 1; i >= 0; i--) {
                     const beam = laserBeams[i];
                     for (let j = enemies.length - 1; j >= 0; j--) {
-                        if (checkCollision(beam, enemies[j])) {
-                            enemies[j].health -= beam.damage;
-                            if (enemies[j].health <= 0) {
-                                createExplosion(enemies[j].x + enemies[j].width / 2, enemies[j].y + enemies[j].height / 2);
+                        const enemy = enemies[j];
+                        if (enemy.invisible) continue;
+                        
+                        if (checkCollision(beam, enemy)) {
+                            if (!enemy.shieldActive) {
+                                enemy.health -= beam.damage;
+                            }
+                            if (enemy.health <= 0) {
+                                createExplosion(enemy.x + enemy.width / 2, enemy.y + enemy.height / 2);
                                 if (Math.random() < 0.3) {
-                                    spawnPowerup(enemies[j].x + enemies[j].width / 2, enemies[j].y + enemies[j].height / 2);
+                                    spawnPowerup(enemy.x + enemy.width / 2, enemy.y + enemy.height / 2);
                                 }
                                 score += 10;
                                 scoreElement.textContent = score;
@@ -1171,7 +1449,9 @@
                     }
                     
                     if (boss && checkCollision(beam, boss)) {
-                        boss.health -= beam.damage;
+                        if (!boss.shieldActive) {
+                            boss.health -= beam.damage;
+                        }
                     }
                 }
                 
@@ -1233,7 +1513,20 @@
                 
                 // 绘制敌机
                 for (const enemy of enemies) {
-                    ctx.drawImage(images[enemy.type], enemy.x, enemy.y, enemy.width, enemy.height);
+                    if (!enemy.invisible) {
+                        ctx.globalAlpha = enemy.invisible ? 0.5 : 1.0;
+                        ctx.drawImage(images[enemy.type], enemy.x, enemy.y, enemy.width, enemy.height);
+                        
+                        // 绘制敌机护盾
+                        if (enemy.shieldActive) {
+                            ctx.strokeStyle = 'cyan';
+                            ctx.lineWidth = 2;
+                            ctx.beginPath();
+                            ctx.arc(enemy.x + enemy.width / 2, enemy.y + enemy.height / 2, enemy.width / 2 + 5, 0, Math.PI * 2);
+                            ctx.stroke();
+                        }
+                        ctx.globalAlpha = 1.0;
+                    }
                 }
                 
                 // 绘制BOSS
@@ -1243,12 +1536,27 @@
                     } else {
                         ctx.drawImage(images.boss, boss.x, boss.y, boss.width, boss.height);
                     }
+                    
+                    // 绘制BOSS护盾
+                    if (boss.shieldActive) {
+                        ctx.strokeStyle = 'gold';
+                        ctx.lineWidth = 4;
+                        ctx.beginPath();
+                        ctx.arc(boss.x + boss.width / 2, boss.y + boss.height / 2, boss.width / 2 + 10, 0, Math.PI * 2);
+                        ctx.stroke();
+                    }
                 }
                 
                 // 绘制敌机子弹
-                ctx.fillStyle = '#ff6666';
                 for (const bullet of enemyBullets) {
-                    ctx.fillRect(bullet.x - bullet.width / 2, bullet.y, bullet.width, bullet.height);
+                    if (bullet.delay > 0) continue;
+                    
+                    ctx.fillStyle = bullet.color;
+                    if (bullet.isLaser) {
+                        ctx.fillRect(bullet.x, bullet.y, bullet.width, bullet.height);
+                    } else {
+                        ctx.fillRect(bullet.x - bullet.width / 2, bullet.y, bullet.width, bullet.height);
+                    }
                 }
                 
                 // 绘制道具
@@ -1327,7 +1635,11 @@
                 update();
                 draw();
                 
-                if (!bossActive && Math.random() < 0.03) {
+                // 根据关卡调整敌机生成频率
+                let spawnRate = 0.03 + Math.min(stage * 0.005, 0.02);
+                if (bossActive) spawnRate *= 0.5;
+                
+                if (!bossActive && Math.random() < spawnRate) {
                     spawnEnemy();
                 }
                 
