@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>中文数字大小写转换器 - OPTO</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .back-button {
+            max-width: 900px;
+            margin: 0 auto 15px;
+        }
+        
+        .back-button a {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s;
+            backdrop-filter: blur(10px);
+        }
+        
+        .back-button a:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateX(-5px);
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 0.95em;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .converter-box {
+            background: #f8f9ff;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border: 2px solid #e8e9ff;
+        }
+        
+        .input-group {
+            margin-bottom: 25px;
+        }
+        
+        .input-group label {
+            display: block;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        .input-group input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1.1em;
+            transition: all 0.3s;
+        }
+        
+        .input-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 10px rgba(102, 126, 234, 0.2);
+        }
+        
+        .result-box {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            border: 2px solid #667eea;
+            margin-bottom: 15px;
+        }
+        
+        .result-label {
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 8px;
+            font-size: 0.95em;
+        }
+        
+        .result-text {
+            font-size: 1.3em;
+            color: #333;
+            word-wrap: break-word;
+            line-height: 1.6;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 25px;
+        }
+        
+        button {
+            padding: 12px 30px;
+            font-size: 1em;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+        
+        .btn-reset {
+            background: #667eea;
+            color: white;
+        }
+        
+        .btn-reset:hover {
+            background: #764ba2;
+            transform: scale(1.05);
+        }
+        
+        .btn-copy {
+            background: #4caf50;
+            color: white;
+        }
+        
+        .btn-copy:hover {
+            background: #45a049;
+            transform: scale(1.05);
+        }
+        
+        .info-box {
+            background: #f0f7ff;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 20px;
+            color: #555;
+            font-size: 0.9em;
+            line-height: 1.6;
+        }
+        
+        .example-box {
+            background: #fff9e6;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 15px;
+        }
+        
+        .example-title {
+            font-weight: bold;
+            color: #f57c00;
+            margin-bottom: 10px;
+        }
+        
+        .example-item {
+            margin: 8px 0;
+            color: #666;
+            line-height: 1.5;
+        }
+        
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #333;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 6px;
+            display: none;
+            z-index: 1000;
+            animation: slideIn 0.3s;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        .footer {
+            background: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+            color: #666;
+            border-top: 1px solid #eee;
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                padding: 20px;
+            }
+            
+            .converter-box {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="back-button">
+        <a href="index.html">← 返回首页</a>
+    </div>
+    
+    <div class="container">
+        <div class="header">
+            <h1>🔢 中文数字大小写转换器</h1>
+            <p>© 2025 版权OPTO，视觉项目组</p>
+        </div>
+        
+        <div class="content">
+            <div class="converter-box">
+                <div class="input-group">
+                    <label>输入阿拉伯数字：</label>
+                    <input type="text" id="numberInput" placeholder="例如：12345 或 123.45" maxlength="20">
+                </div>
+                
+                <div class="result-box">
+                    <div class="result-label">小写中文：</div>
+                    <div class="result-text" id="lowercaseResult">请输入数字</div>
+                </div>
+                
+                <div class="result-box">
+                    <div class="result-label">大写中文（金额用）：</div>
+                    <div class="result-text" id="uppercaseResult">请输入数字</div>
+                </div>
+                
+                <div class="button-group">
+                    <button class="btn-reset" onclick="resetAll()">🔄 清空</button>
+                    <button class="btn-copy" onclick="copyLowercase()">📋 复制小写</button>
+                    <button class="btn-copy" onclick="copyUppercase()">📋 复制大写</button>
+                </div>
+            </div>
+            
+            <div class="info-box">
+                💡 <strong>使用说明：</strong>报销专属，自动转换为中文小写和大写，对着抄！
+            </div>
+            
+            <div class="example-box">
+                <div class="example-title">📝 转换示例：</div>
+                <div class="example-item">• 123 → 一百二十三 / 壹佰贰拾叁</div>
+                <div class="example-item">• 10086 → 一万零八十六 / 壹万零捌拾陆</div>
+                <div class="example-item">• 123.45 → 一百二十三点四五 / 壹佰贰拾叁点肆伍</div>
+                <div class="example-item">• 1000000 → 一百万 / 壹佰万</div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>© 2025 版权OPTO，视觉项目组</p>
+        </div>
+    </div>
+    
+    <div class="toast" id="toast"></div>
+    
+    <script>
+        const numberInput = document.getElementById('numberInput');
+        const lowercaseResult = document.getElementById('lowercaseResult');
+        const uppercaseResult = document.getElementById('uppercaseResult');
+        
+        // 中文数字
+        const lowerDigits = ['零', '一', '二', '三', '四', '五', '六', '七', '八', '九'];
+        const upperDigits = ['零', '壹', '贰', '叁', '肆', '伍', '陆', '柒', '捌', '玖'];
+        const units = ['', '十', '百', '千'];
+        const bigUnits = ['', '万', '亿', '兆'];
+        
+        numberInput.addEventListener('input', convert);
+        
+        function convert() {
+            const value = numberInput.value.trim();
+            
+            if (!value) {
+                lowercaseResult.textContent = '请输入数字';
+                uppercaseResult.textContent = '请输入数字';
+                return;
+            }
+            
+            // 验证输入
+            if (!/^-?\d+\.?\d*$/.test(value)) {
+                lowercaseResult.textContent = '请输入有效的数字';
+                uppercaseResult.textContent = '请输入有效的数字';
+                return;
+            }
+            
+            // 处理负数和小数
+            const isNegative = value.startsWith('-');
+            const [integerPart, decimalPart] = value.replace('-', '').split('.');
+            
+            // 转换整数部分
+            const lowerInt = convertInteger(integerPart, lowerDigits);
+            const upperInt = convertInteger(integerPart, upperDigits);
+            
+            // 处理小数部分
+            let lowerDec = '';
+            let upperDec = '';
+            if (decimalPart) {
+                lowerDec = '点' + Array.from(decimalPart).map(d => lowerDigits[parseInt(d)]).join('');
+                upperDec = '点' + Array.from(decimalPart).map(d => upperDigits[parseInt(d)]).join('');
+            }
+            
+            // 组合结果
+            const negativePrefix = isNegative ? '负' : '';
+            lowercaseResult.textContent = negativePrefix + lowerInt + lowerDec;
+            uppercaseResult.textContent = negativePrefix + upperInt + upperDec;
+        }
+        
+        function convertInteger(num, digits) {
+            if (num === '0') return digits[0];
+            
+            num = num.replace(/^0+/, ''); // 去除前导零
+            if (!num) return digits[0];
+            
+            let result = '';
+            const len = num.length;
+            
+            // 按4位分组处理
+            const groups = [];
+            for (let i = len; i > 0; i -= 4) {
+                groups.unshift(num.substring(Math.max(0, i - 4), i));
+            }
+            
+            groups.forEach((group, groupIndex) => {
+                const groupResult = convertGroup(group, digits);
+                if (groupResult) {
+                    result += groupResult + bigUnits[groups.length - groupIndex - 1];
+                }
+            });
+            
+            // 处理"一十"开头的情况
+            if (result.startsWith(digits[1] + '十') && len <= 2) {
+                result = result.substring(1);
+            }
+            
+            return result;
+        }
+        
+        function convertGroup(group, digits) {
+            let result = '';
+            const len = group.length;
+            let hasZero = false;
+            
+            for (let i = 0; i < len; i++) {
+                const digit = parseInt(group[i]);
+                const pos = len - i - 1;
+                
+                if (digit === 0) {
+                    hasZero = true;
+                } else {
+                    if (hasZero && result) {
+                        result += digits[0];
+                    }
+                    result += digits[digit] + units[pos];
+                    hasZero = false;
+                }
+            }
+            
+            return result;
+        }
+        
+        function resetAll() {
+            numberInput.value = '';
+            lowercaseResult.textContent = '请输入数字';
+            uppercaseResult.textContent = '请输入数字';
+            showToast('已清空所有内容');
+        }
+        
+        function copyLowercase() {
+            const text = lowercaseResult.textContent;
+            if (text === '请输入数字' || text === '请输入有效的数字') {
+                showToast('没有可复制的内容');
+                return;
+            }
+            copyToClipboard(text, '小写中文已复制');
+        }
+        
+        function copyUppercase() {
+            const text = uppercaseResult.textContent;
+            if (text === '请输入数字' || text === '请输入有效的数字') {
+                showToast('没有可复制的内容');
+                return;
+            }
+            copyToClipboard(text, '大写中文已复制');
+        }
+        
+        function copyToClipboard(text, message) {
+            navigator.clipboard.writeText(text).then(() => {
+                showToast(message);
+            }).catch(() => {
+                showToast('复制失败');
+            });
+        }
+        
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.style.display = 'block';
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 2000);
+        }
+    </script>
+</body>
+</html>

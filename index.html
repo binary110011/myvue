@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>单位换算器 - OPTO</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            color: white;
+            padding: 60px 20px 40px;
+        }
+        
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.95;
+        }
+        
+        .converter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            padding: 20px;
+        }
+        
+        .converter-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+        
+        .converter-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+        
+        .converter-card.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .converter-card.inactive {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .converter-card.inactive:hover {
+            transform: none;
+        }
+        
+        .card-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+        
+        .card-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .card-description {
+            font-size: 0.9em;
+            opacity: 0.8;
+            line-height: 1.5;
+        }
+        
+        .card-status {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: bold;
+        }
+        
+        .status-active {
+            background: #4caf50;
+            color: white;
+        }
+        
+        .status-coming {
+            background: #ff9800;
+            color: white;
+        }
+        
+        .footer {
+            text-align: center;
+            color: white;
+            padding: 40px 20px 20px;
+            opacity: 0.9;
+        }
+        
+        .footer p {
+            font-size: 0.95em;
+        }
+        
+      /* ============== 新增广告样式 ============== */
+        .fixed-ad {
+            position: fixed; /* 关键:固定定位,使其不随滚动条移动 */
+            bottom: 460px;    /* 距离底部 30px */
+            right: 30px;     /* 距离右侧 30px */
+            width: 250px;    /* 广告宽度 */
+            background-color: #f44336; /* 红色背景,吸引注意 */
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            text-align: center;
+            z-index: 1000;   /* 确保它位于其他元素之上 */
+            font-size: 0.9em;
+            line-height: 1.4;
+            animation: bounce 1.3s ease-in-out infinite, flashBg 2.3s ease-in-out infinite;
+        }
+        
+        .fixed-ad:hover {
+            animation-play-state: paused;
+            transform: scale(1.1);
+        }
+        
+        /* 跳动动画 */
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0) scale(1);
+            }
+            25% {
+                transform: translateY(-20px) scale(1.05);
+            }
+            50% {
+                transform: translateY(0) scale(1);
+            }
+            75% {
+                transform: translateY(-10px) scale(1.02);
+            }
+        }
+        
+        /* 背景颜色闪烁动画 */
+        @keyframes flashBg {
+            0%, 100% {
+                background-color: #f44336;
+                box-shadow: 0 4px 12px rgba(244, 67, 54, 0.6);
+            }
+            25% {
+                background-color: #ff5722;
+                box-shadow: 0 6px 20px rgba(255, 87, 34, 0.8);
+            }
+            50% {
+                background-color: #ff9800;
+                box-shadow: 0 8px 25px rgba(255, 152, 0, 0.9);
+            }
+            75% {
+                background-color: #ff5722;
+                box-shadow: 0 6px 20px rgba(255, 87, 34, 0.8);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔧 单位换算器集合</h1>
+            <p>专业的多功能单位转换工具</p>
+        </div>
+        
+        <div class="converter-grid">
+            <a href="length.html" class="converter-card active">
+                <div class="card-icon">📏</div>
+                <div class="card-title">长度单位换算器</div>
+                <div class="card-description">公制、英制、市制单位相互转换</div>
+                <span class="card-status status-active">✓ 可用</span>
+            </a>
+            
+            <a href="area.html" class="converter-card active">
+                <div class="card-icon">📐</div>
+                <div class="card-title">面积单位换算器</div>
+                <div class="card-description">平方米、亩、公顷等单位转换</div>
+                  <span class="card-status status-active">✓ 可用</span>
+             </a>
+            
+            <a href="weight.html" class="converter-card active">
+    <div class="card-icon">⚖️</div>
+    <div class="card-title">重量单位换算器</div>
+    <div class="card-description">千克、磅、吨等单位转换</div>
+    <span class="card-status status-active">✓ 可用</span>
+</a>
+            
+            <a href="chinese-number.html" class="converter-card active">
+    <div class="card-icon">🔢</div>
+    <div class="card-title">中文大小写换算器</div>
+    <div class="card-description">报销专属，123 → 壹佰贰拾叁</div>
+    <span class="card-status status-active">✓ 可用</span>
+   </a>
+          
+            
+                <a href="Flight.html" class="converter-card active">
+			<div class="card-icon">✈️</div>
+			<div class="card-title">全民打飞机</div>
+			<div class="card-description">摸鱼专属，困难版</div>
+			<span class="card-status status-active">✓ 可用</span>
+		   </a>
+				  
+            
+               <a href="Time.html" class="converter-card active">
+			<div class="card-icon">⏰</div>
+			<div class="card-title">时间单位换算器</div>
+			<div class="card-description">准时间单位换算</div>
+			<span class="card-status status-active">✓ 可用</span>
+		   </a>
+            
+            <div class="converter-card inactive">
+                <div class="card-icon">💨</div>
+                <div class="card-title">压力单位换算器</div>
+                <div class="card-description">帕斯卡、巴、大气压转换</div>
+                <span class="card-status status-coming">即将推出</span>
+            </div>
+            
+            <div class="converter-card inactive">
+                <div class="card-icon">💾</div>
+                <div class="card-title">字节单位换算器</div>
+                <div class="card-description">KB、MB、GB、TB等转换</div>
+                <span class="card-status status-coming">即将推出</span>
+            </div>
+            
+            <div class="converter-card inactive">
+                <div class="card-icon">⏰</div>
+                <div class="card-title">时间单位换算器</div>
+                <div class="card-description">秒、分钟、小时、天等转换</div>
+                <span class="card-status status-coming">即将推出</span>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>© 2025 版权OPTO，视觉项目组内部使用，测试版</p>
+            <p style="margin-top: 10px; font-size: 0.85em;">持续更新中 | 更多换算器即将上线</p>
+        </div>
+    </div>
+    
+  <div class="fixed-ad">
+  <p>🎉 **项目内部通知**</p>
+    <p>视觉项目组招聘 C# 工程师！</p>
+	    <p>点击我</p>
+    <a href="muyu.html" class="ad-link">
+        <img src="./img/1.png" alt="视觉项目组招聘广告" style="width: 100%; height: auto; display: block; border-radius: 8px;">
+    </a>
+</div>
+    </body>
+</html>
