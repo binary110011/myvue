@@ -1,0 +1,316 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>毕业设计教育平台</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    /* 自定义样式 */
+    .project-card {
+      transition: all 0.3s ease;
+    }
+    .project-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+    .mobile-menu {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease-out;
+    }
+    .mobile-menu.open {
+      max-height: 300px;
+      transition: max-height 0.3s ease-in;
+    }
+    .fade-in {
+      animation: fadeIn 0.5s ease-in;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-r from-blue-50 to-indigo-100 min-h-screen">
+  <!-- 导航栏 -->
+  <header class="bg-white shadow-md py-4 px-6 flex justify-between items-center sticky top-0 z-50">
+    <div class="text-xl font-bold text-indigo-700 flex items-center">
+      <i class="fas fa-graduation-cap mr-2"></i>
+      毕业设计教育平台
+    </div>
+    <nav class="space-x-6 hidden md:flex">
+      <a href="#" class="text-gray-700 hover:text-indigo-600 transition flex items-center">
+        <i class="fas fa-home mr-1"></i> 首页
+      </a>
+      <a href="#projects" class="text-gray-700 hover:text-indigo-600 transition flex items-center">
+        <i class="fas fa-project-diagram mr-1"></i> 项目展示
+      </a>
+      <a href="#about" class="text-gray-700 hover:text-indigo-600 transition flex items-center">
+        <i class="fas fa-info-circle mr-1"></i> 关于我们
+      </a>
+    </nav>
+    <button id="menu-toggle" class="md:hidden text-gray-700 text-2xl">
+      <i class="fas fa-bars"></i>
+    </button>
+  </header>
+
+  <!-- 移动端菜单 -->
+  <div id="mobile-menu" class="mobile-menu bg-white shadow-lg absolute w-full z-40">
+    <div class="flex flex-col py-4">
+      <a href="#" class="py-3 px-6 text-gray-700 hover:bg-indigo-50 flex items-center">
+        <i class="fas fa-home mr-2"></i> 首页
+      </a>
+      <a href="#projects" class="py-3 px-6 text-gray-700 hover:bg-indigo-50 flex items-center">
+        <i class="fas fa-project-diagram mr-2"></i> 项目展示
+      </a>
+      <a href="#about" class="py-3 px-6 text-gray-700 hover:bg-indigo-50 flex items-center">
+        <i class="fas fa-info-circle mr-2"></i> 关于我们
+      </a>
+    </div>
+  </div>
+
+  <!-- 主体内容 -->
+  <main class="container mx-auto px-4 py-10">
+    <!-- 首屏介绍 -->
+    <section class="text-center py-16 fade-in">
+      <div class="mb-6 flex justify-center">
+        <div class="bg-indigo-100 p-4 rounded-full">
+          <i class="fas fa-laptop-code text-4xl text-indigo-600"></i>
+        </div>
+      </div>
+      <h1 class="text-4xl md:text-5xl font-extrabold text-gray-800 mb-4">毕业设计教育平台</h1>
+      <p class="text-lg text-gray-600 max-w-2xl mx-auto mb-8">提供丰富的计算机程序教学资源，助力你完成高质量毕业设计</p>
+      <div class="flex flex-col sm:flex-row justify-center gap-4">
+        <a href="#projects" class="bg-indigo-600 text-white px-6 py-3 rounded-full shadow-lg hover:bg-indigo-700 transition flex items-center justify-center">
+          <i class="fas fa-book-open mr-2"></i> 查看项目
+        </a>
+        <a href="#about" class="bg-white text-indigo-600 border border-indigo-600 px-6 py-3 rounded-full shadow-lg hover:bg-indigo-50 transition flex items-center justify-center">
+          <i class="fas fa-user-graduate mr-2"></i> 了解详情
+        </a>
+      </div>
+    </section>
+
+    <!-- 项目展示 -->
+    <section id="projects" class="py-12 fade-in">
+      <div class="flex justify-between items-center mb-8">
+        <h2 class="text-3xl font-bold text-gray-800">热门项目推荐</h2>
+        <div class="relative">
+          <input type="text" id="search-input" placeholder="搜索项目..." class="pl-10 pr-4 py-2 border rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-300">
+          <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+        </div>
+      </div>
+      
+      <div id="projects-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- 项目卡片将通过JavaScript动态生成 -->
+      </div>
+      
+      <div class="text-center mt-10">
+        <button id="load-more" class="inline-block bg-indigo-600 text-white px-6 py-3 rounded-full shadow hover:bg-indigo-700 transition">
+          <i class="fas fa-sync-alt mr-2"></i> 加载更多
+        </button>
+      </div>
+    </section>
+
+    <!-- 关于我们 -->
+    <section id="about" class="py-16 bg-white rounded-2xl shadow-lg px-6 md:px-12 mt-16 fade-in">
+      <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">关于我们</h2>
+      <div class="max-w-3xl mx-auto">
+        <p class="text-gray-600 mb-6 text-center">
+          毕业设计教育平台致力于为计算机专业学生提供全面、实用的毕业设计指导和项目资源。
+          通过丰富的教学内容和项目案例，帮助学生顺利完成毕业设计并提升实战能力。
+        </p>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10">
+          <div class="text-center p-6 bg-indigo-50 rounded-xl">
+            <div class="text-indigo-600 text-3xl mb-3">
+              <i class="fas fa-book"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-800 mb-2">丰富资源</h3>
+            <p class="text-gray-600">涵盖多个技术领域的毕业设计项目，满足不同专业需求</p>
+          </div>
+          <div class="text-center p-6 bg-indigo-50 rounded-xl">
+            <div class="text-indigo-600 text-3xl mb-3">
+              <i class="fas fa-chalkboard-teacher"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-800 mb-2">专业指导</h3>
+            <p class="text-gray-600">提供详细的项目文档和视频教程，手把手教学</p>
+          </div>
+          <div class="text-center p-6 bg-indigo-50 rounded-xl">
+            <div class="text-indigo-600 text-3xl mb-3">
+              <i class="fas fa-users"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-800 mb-2">社区支持</h3>
+            <p class="text-gray-600">加入学习社区，与同学和导师交流经验</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- 页脚 -->
+  <footer class="bg-gray-800 text-white py-8 text-center">
+    <div class="container mx-auto px-4">
+      <p class="mb-2">© 2026 毕业设计教育平台. 保留所有权利.</p>
+      <div class="flex justify-center space-x-4">
+        <a href="#" class="text-gray-400 hover:text-white">
+          <i class="fab fa-github"></i>
+        </a>
+        <a href="#" class="text-gray-400 hover:text-white">
+          <i class="fab fa-weixin"></i>
+        </a>
+        <a href="#" class="text-gray-400 hover:text-white">
+          <i class="fab fa-qq"></i>
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // 项目数据
+    const projects = [
+      {
+        id: 1,
+        title: "在线考试系统",
+        description: "基于Java开发的在线考试系统，支持题库管理、自动评分等功能。",
+        image: "https://i2.hdslb.com/bfs/archive/0e1de13988292e974be1149ae86ade5f8b512add.png",
+        category: "Java"
+      },
+      {
+        id: 2,
+        title: "校园二手交易平台",
+        description: "使用Vue和Node.js构建的校园二手交易平台，支持商品发布与交易。",
+      image: "https://img9.doubanio.com/view/group_topic/l/public/p400274635.webp",
+        category: "Vue"
+      },
+      {
+        id: 3,
+        title: "智能聊天机器人",
+        description: "基于Python和NLP技术的智能聊天机器人，具备语义理解和对话功能。",
+        image: "https://picsum.photos/400/250?image=1025",
+        category: "Python"
+      },
+      {
+        id: 4,
+        title: "学生信息管理系统",
+        description: "采用Spring Boot + MyBatis开发的学生信息管理系统，功能完善。",
+        image: "https://img9.doubanio.com/view/group_topic/l/public/p400274635.webp",
+        category: "Spring"
+      },
+      {
+        id: 5,
+        title: "移动端记账应用",
+        description: "使用React Native开发的跨平台记账应用，界面简洁美观。",
+        image: "https://picsum.photos/400/250?image=1040",
+        category: "React"
+      },
+      {
+        id: 6,
+        title: "图书管理系统",
+        description: "基于C# WinForm的图书管理系统，适合初学者练习。",
+        image: "https://picsum.photos/400/250?image=1050",
+        category: "C#"
+      }
+    ];
+
+    // 当前显示的项目数量
+    let displayedProjects = 3;
+
+    // 渲染项目卡片
+    function renderProjects(projectsToShow) {
+      const container = document.getElementById('projects-container');
+      container.innerHTML = '';
+      
+      projectsToShow.forEach(project => {
+        const card = document.createElement('div');
+        card.className = 'project-card bg-white rounded-xl shadow-lg overflow-hidden';
+        card.innerHTML = `
+          <img src="${project.image}" alt="毕业设计项目示例" class="w-full h-30 object-cover">
+          <div class="p-6">
+            <div class="flex justify-between items-start">
+              <h3 class="text-xl font-semibold text-gray-800 mb-2">${project.title}</h3>
+              <span class="bg-indigo-100 text-indigo-800 text-xs font-semibold px-2.5 py-0.5 rounded">${project.category}</span>
+            </div>
+            <p class="text-gray-600 mb-4">${project.description}</p>
+            <div class="flex justify-between items-center">
+              <a href="#" class="text-indigo-600 hover:underline flex items-center">
+                <i class="fas fa-eye mr-1"></i> 查看详情
+              </a>
+              <button class="text-gray-500 hover:text-indigo-600">
+                <i class="fas fa-bookmark"></i>
+              </button>
+            </div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    // 初始化显示项目
+    renderProjects(projects.slice(0, displayedProjects));
+
+    // 加载更多项目
+    document.getElementById('load-more').addEventListener('click', function() {
+      displayedProjects += 3;
+      if (displayedProjects >= projects.length) {
+        displayedProjects = projects.length;
+        this.textContent = '没有更多项目了';
+        this.disabled = true;
+      }
+      renderProjects(projects.slice(0, displayedProjects));
+    });
+
+    // 搜索功能
+    document.getElementById('search-input').addEventListener('input', function() {
+      const searchTerm = this.value.toLowerCase();
+      const filteredProjects = projects.filter(project => 
+        project.title.toLowerCase().includes(searchTerm) || 
+        project.description.toLowerCase().includes(searchTerm) ||
+        project.category.toLowerCase().includes(searchTerm)
+      );
+      renderProjects(filteredProjects.slice(0, displayedProjects));
+    });
+
+    // 移动端菜单切换
+    document.getElementById('menu-toggle').addEventListener('click', function() {
+      const menu = document.getElementById('mobile-menu');
+      menu.classList.toggle('open');
+      const icon = this.querySelector('i');
+      if (menu.classList.contains('open')) {
+        icon.classList.remove('fa-bars');
+        icon.classList.add('fa-times');
+      } else {
+        icon.classList.remove('fa-times');
+        icon.classList.add('fa-bars');
+      }
+    });
+
+    // 平滑滚动
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          window.scrollTo({
+            top: target.offsetTop - 80,
+            behavior: 'smooth'
+          });
+          // 关闭移动端菜单
+          const menu = document.getElementById('mobile-menu');
+          if (menu.classList.contains('open')) {
+            menu.classList.remove('open');
+            document.getElementById('menu-toggle').querySelector('i').classList.remove('fa-times');
+            document.getElementById('menu-toggle').querySelector('i').classList.add('fa-bars');
+          }
+        }
+      });
+    });
+
+    // 页面加载动画
+    window.addEventListener('load', function() {
+      document.body.classList.add('loaded');
+    });
+  </script>
+</body>
+</html>
