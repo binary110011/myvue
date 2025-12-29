@@ -1,316 +1,488 @@
-
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>毕业设计教育平台</title>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <style>
-    /* 自定义样式 */
-    .project-card {
-      transition: all 0.3s ease;
-    }
-    .project-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-    }
-    .mobile-menu {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.3s ease-out;
-    }
-    .mobile-menu.open {
-      max-height: 300px;
-      transition: max-height 0.3s ease-in;
-    }
-    .fade-in {
-      animation: fadeIn 0.5s ease-in;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-  </style>
-</head>
-<body class="bg-gradient-to-r from-blue-50 to-indigo-100 min-h-screen">
-  <!-- 导航栏 -->
-  <header class="bg-white shadow-md py-4 px-6 flex justify-between items-center sticky top-0 z-50">
-    <div class="text-xl font-bold text-indigo-700 flex items-center">
-      <i class="fas fa-graduation-cap mr-2"></i>
-      几把猫毕业设计教育平台
-    </div>
-    <nav class="space-x-6 hidden md:flex">
-      <a href="#" class="text-gray-700 hover:text-indigo-600 transition flex items-center">
-        <i class="fas fa-home mr-1"></i> 首页
-      </a>
-      <a href="#projects" class="text-gray-700 hover:text-indigo-600 transition flex items-center">
-        <i class="fas fa-project-diagram mr-1"></i> 项目展示
-      </a>
-      <a href="#about" class="text-gray-700 hover:text-indigo-600 transition flex items-center">
-        <i class="fas fa-info-circle mr-1"></i> 关于我们
-      </a>
-    </nav>
-    <button id="menu-toggle" class="md:hidden text-gray-700 text-2xl">
-      <i class="fas fa-bars"></i>
-    </button>
-  </header>
-
-  <!-- 移动端菜单 -->
-  <div id="mobile-menu" class="mobile-menu bg-white shadow-lg absolute w-full z-40">
-    <div class="flex flex-col py-4">
-      <a href="#" class="py-3 px-6 text-gray-700 hover:bg-indigo-50 flex items-center">
-        <i class="fas fa-home mr-2"></i> 首页
-      </a>
-      <a href="#projects" class="py-3 px-6 text-gray-700 hover:bg-indigo-50 flex items-center">
-        <i class="fas fa-project-diagram mr-2"></i> 项目展示
-      </a>
-      <a href="#about" class="py-3 px-6 text-gray-700 hover:bg-indigo-50 flex items-center">
-        <i class="fas fa-info-circle mr-2"></i> 关于我们
-      </a>
-    </div>
-  </div>
-
-  <!-- 主体内容 -->
-  <main class="container mx-auto px-4 py-10">
-    <!-- 首屏介绍 -->
-    <section class="text-center py-16 fade-in">
-      <div class="mb-6 flex justify-center">
-        <div class="bg-indigo-100 p-4 rounded-full">
-          <i class="fas fa-laptop-code text-4xl text-indigo-600"></i>
-        </div>
-      </div>
-      <h1 class="text-4xl md:text-5xl font-extrabold text-gray-800 mb-4">毕业设计教育平台</h1>
-      <p class="text-lg text-gray-600 max-w-2xl mx-auto mb-8">提供丰富的计算机程序教学资源，助力你完成高质量毕业设计</p>
-      <div class="flex flex-col sm:flex-row justify-center gap-4">
-        <a href="#projects" class="bg-indigo-600 text-white px-6 py-3 rounded-full shadow-lg hover:bg-indigo-700 transition flex items-center justify-center">
-          <i class="fas fa-book-open mr-2"></i> 查看项目
-        </a>
-        <a href="#about" class="bg-white text-indigo-600 border border-indigo-600 px-6 py-3 rounded-full shadow-lg hover:bg-indigo-50 transition flex items-center justify-center">
-          <i class="fas fa-user-graduate mr-2"></i> 了解详情
-        </a>
-      </div>
-    </section>
-
-    <!-- 项目展示 -->
-    <section id="projects" class="py-12 fade-in">
-      <div class="flex justify-between items-center mb-8">
-        <h2 class="text-3xl font-bold text-gray-800">热门项目推荐</h2>
-        <div class="relative">
-          <input type="text" id="search-input" placeholder="搜索项目..." class="pl-10 pr-4 py-2 border rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-300">
-          <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
-        </div>
-      </div>
-      
-      <div id="projects-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        <!-- 项目卡片将通过JavaScript动态生成 -->
-      </div>
-      
-      <div class="text-center mt-10">
-        <button id="load-more" class="inline-block bg-indigo-600 text-white px-6 py-3 rounded-full shadow hover:bg-indigo-700 transition">
-          <i class="fas fa-sync-alt mr-2"></i> 加载更多
-        </button>
-      </div>
-    </section>
-
-    <!-- 关于我们 -->
-    <section id="about" class="py-16 bg-white rounded-2xl shadow-lg px-6 md:px-12 mt-16 fade-in">
-      <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">关于我们</h2>
-      <div class="max-w-3xl mx-auto">
-        <p class="text-gray-600 mb-6 text-center">
-          毕业设计教育平台致力于为计算机专业学生提供全面、实用的毕业设计指导和项目资源。
-          通过丰富的教学内容和项目案例，帮助学生顺利完成毕业设计并提升实战能力。
-        </p>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10">
-          <div class="text-center p-6 bg-indigo-50 rounded-xl">
-            <div class="text-indigo-600 text-3xl mb-3">
-              <i class="fas fa-book"></i>
-            </div>
-            <h3 class="text-xl font-semibold text-gray-800 mb-2">丰富资源</h3>
-            <p class="text-gray-600">涵盖多个技术领域的毕业设计项目，满足不同专业需求</p>
-          </div>
-          <div class="text-center p-6 bg-indigo-50 rounded-xl">
-            <div class="text-indigo-600 text-3xl mb-3">
-              <i class="fas fa-chalkboard-teacher"></i>
-            </div>
-            <h3 class="text-xl font-semibold text-gray-800 mb-2">专业指导</h3>
-            <p class="text-gray-600">提供详细的项目文档和视频教程，手把手教学</p>
-          </div>
-          <div class="text-center p-6 bg-indigo-50 rounded-xl">
-            <div class="text-indigo-600 text-3xl mb-3">
-              <i class="fas fa-users"></i>
-            </div>
-            <h3 class="text-xl font-semibold text-gray-800 mb-2">社区支持</h3>
-            <p class="text-gray-600">加入学习社区，与同学和导师交流经验</p>
-          </div>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <!-- 页脚 -->
-  <footer class="bg-gray-800 text-white py-8 text-center">
-    <div class="container mx-auto px-4">
-      <p class="mb-2">© 2026 毕业设计教育平台. 保留所有权利.</p>
-      <div class="flex justify-center space-x-4">
-        <a href="#" class="text-gray-400 hover:text-white">
-          <i class="fab fa-github"></i>
-        </a>
-        <a href="#" class="text-gray-400 hover:text-white">
-          <i class="fab fa-weixin"></i>
-        </a>
-        <a href="#" class="text-gray-400 hover:text-white">
-          <i class="fab fa-qq"></i>
-        </a>
-      </div>
-    </div>
-  </footer>
-
-  <script>
-    // 项目数据
-    const projects = [
-      {
-        id: 1,
-        title: "在线考试系统",
-        description: "基于Java开发的在线考试系统，支持题库管理、自动评分等功能。",
-        image: "../img/jbm1.png",
-        category: "Java"
-      },
-      {
-        id: 2,
-        title: "校园二手交易平台",
-        description: "使用Vue和Node.js构建的校园二手交易平台，支持商品发布与交易。",
-         image: "../img/jbm2.jpg",
-        category: "Vue"
-      },
-      {
-        id: 3,
-        title: "智能聊天机器人",
-        description: "基于Python和NLP技术的智能聊天机器人，具备语义理解和对话功能。",
-        image: "https://picsum.photos/400/250?image=1025",
-        category: "Python"
-      },
-      {
-        id: 4,
-        title: "学生信息管理系统",
-        description: "采用Spring Boot + MyBatis开发的学生信息管理系统，功能完善。",
-        image: "../img/jbm2.jpg",
-        category: "Spring"
-      },
-      {
-        id: 5,
-        title: "移动端记账应用",
-        description: "使用React Native开发的跨平台记账应用，界面简洁美观。",
-        image: "https://picsum.photos/400/250?image=1040",
-        category: "React"
-      },
-      {
-        id: 6,
-        title: "图书管理系统",
-        description: "基于C# WinForm的图书管理系统，适合初学者练习。",
-        image: "https://picsum.photos/400/250?image=1050",
-        category: "C#"
-      }
-    ];
-
-    // 当前显示的项目数量
-    let displayedProjects = 3;
-
-    // 渲染项目卡片
-    function renderProjects(projectsToShow) {
-      const container = document.getElementById('projects-container');
-      container.innerHTML = '';
-      
-      projectsToShow.forEach(project => {
-        const card = document.createElement('div');
-        card.className = 'project-card bg-white rounded-xl shadow-lg overflow-hidden';
-        card.innerHTML = `
-          <img src="${project.image}" alt="毕业设计项目示例" class="w-full h-30 object-cover">
-          <div class="p-6">
-            <div class="flex justify-between items-start">
-              <h3 class="text-xl font-semibold text-gray-800 mb-2">${project.title}</h3>
-              <span class="bg-indigo-100 text-indigo-800 text-xs font-semibold px-2.5 py-0.5 rounded">${project.category}</span>
-            </div>
-            <p class="text-gray-600 mb-4">${project.description}</p>
-            <div class="flex justify-between items-center">
-              <a href="#" class="text-indigo-600 hover:underline flex items-center">
-                <i class="fas fa-eye mr-1"></i> 查看详情
-              </a>
-              <button class="text-gray-500 hover:text-indigo-600">
-                <i class="fas fa-bookmark"></i>
-              </button>
-            </div>
-          </div>
-        `;
-        container.appendChild(card);
-      });
-    }
-
-    // 初始化显示项目
-    renderProjects(projects.slice(0, displayedProjects));
-
-    // 加载更多项目
-    document.getElementById('load-more').addEventListener('click', function() {
-      displayedProjects += 3;
-      if (displayedProjects >= projects.length) {
-        displayedProjects = projects.length;
-        this.textContent = '没有更多项目了';
-        this.disabled = true;
-      }
-      renderProjects(projects.slice(0, displayedProjects));
-    });
-
-    // 搜索功能
-    document.getElementById('search-input').addEventListener('input', function() {
-      const searchTerm = this.value.toLowerCase();
-      const filteredProjects = projects.filter(project => 
-        project.title.toLowerCase().includes(searchTerm) || 
-        project.description.toLowerCase().includes(searchTerm) ||
-        project.category.toLowerCase().includes(searchTerm)
-      );
-      renderProjects(filteredProjects.slice(0, displayedProjects));
-    });
-
-    // 移动端菜单切换
-    document.getElementById('menu-toggle').addEventListener('click', function() {
-      const menu = document.getElementById('mobile-menu');
-      menu.classList.toggle('open');
-      const icon = this.querySelector('i');
-      if (menu.classList.contains('open')) {
-        icon.classList.remove('fa-bars');
-        icon.classList.add('fa-times');
-      } else {
-        icon.classList.remove('fa-times');
-        icon.classList.add('fa-bars');
-      }
-    });
-
-    // 平滑滚动
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function(e) {
-        e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        if (target) {
-          window.scrollTo({
-            top: target.offsetTop - 80,
-            behavior: 'smooth'
-          });
-          // 关闭移动端菜单
-          const menu = document.getElementById('mobile-menu');
-          if (menu.classList.contains('open')) {
-            menu.classList.remove('open');
-            document.getElementById('menu-toggle').querySelector('i').classList.remove('fa-times');
-            document.getElementById('menu-toggle').querySelector('i').classList.add('fa-bars');
-          }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CS毕设辅导中心 | 优质计算机毕业设计参考与指导</title>
+    <style>
+        /* --- 全局样式 --- */
+        :root {
+            --primary-color: #2563eb; /* 科技蓝 */
+            --secondary-color: #1e40af;
+            --text-dark: #1f2937;
+            --text-gray: #6b7280;
+            --bg-light: #f3f4f6;
+            --white: #ffffff;
         }
-      });
-    });
 
-    // 页面加载动画
-    window.addEventListener('load', function() {
-      document.body.classList.add('loaded');
-    });
-  </script>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-dark);
+            background-color: var(--bg-light);
+        }
+
+        a { text-decoration: none; color: inherit; }
+        ul { list-style: none; }
+
+        /* --- 通用组件 --- */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 24px;
+            background-color: var(--primary-color);
+            color: var(--white);
+            border-radius: 6px;
+            font-weight: 600;
+            transition: background 0.3s;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: var(--text-dark);
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: var(--text-gray);
+            margin-bottom: 50px;
+        }
+
+        /* --- 导航栏 --- */
+        header {
+            background: var(--white);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 70px;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+
+        /* --- Hero 区域 --- */
+        .hero {
+            background: linear-gradient(135deg, #eff6ff 0%, #ffffff 100%);
+            padding: 80px 0;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--text-gray);
+            margin-bottom: 30px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* --- 优势特点 --- */
+        .features {
+            padding: 80px 0;
+            background: var(--white);
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .feature-item {
+            text-align: center;
+            padding: 30px;
+            border-radius: 10px;
+            background: #fafafa;
+            border: 1px solid #e5e7eb;
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        /* --- 项目展示 (核心内容) --- */
+        .projects {
+            padding: 80px 0;
+        }
+
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 30px;
+        }
+
+        .project-card {
+            background: var(--white);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: transform 0.3s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .project-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+        }
+
+        .card-img-placeholder {
+            width: 100%;
+            height: 200px;
+            background-color: #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-size: 1.2rem;
+            position: relative;
+        }
+        
+        /* 实际使用时替换 img src */
+        .card-img-placeholder img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .card-content {
+            padding: 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .tag {
+            display: inline-block;
+            background-color: #eff6ff;
+            color: var(--primary-color);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            margin-bottom: 10px;
+            width: fit-content;
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .card-desc {
+            font-size: 0.9rem;
+            color: var(--text-gray);
+            margin-bottom: 20px;
+            flex-grow: 1;
+        }
+
+        .card-footer {
+            margin-top: auto;
+        }
+
+        .btn-outline {
+            display: block;
+            text-align: center;
+            width: 100%;
+            padding: 8px 0;
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+
+        .btn-outline:hover {
+            background-color: var(--primary-color);
+            color: var(--white);
+        }
+
+        /* --- 联系我们 --- */
+        .contact {
+            background: var(--text-dark);
+            color: var(--white);
+            padding: 60px 0;
+            text-align: center;
+        }
+
+        .contact h2 { color: var(--white); margin-bottom: 20px; }
+        .contact-box {
+            background: rgba(255,255,255,0.1);
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 600px;
+            margin: 0 auto;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .contact-info {
+            font-size: 1.2rem;
+            margin: 10px 0;
+        }
+        
+        .contact-highlight {
+            color: #fbbf24; /* 金黄色高亮 */
+            font-weight: bold;
+        }
+
+        /* --- 底部 --- */
+        footer {
+            background: #111827;
+            color: #9ca3af;
+            text-align: center;
+            padding: 20px 0;
+            font-size: 0.9rem;
+        }
+
+        /* --- 移动端适配 --- */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2rem; }
+            .nav-links { display: none; } /* 简单处理：手机端隐藏菜单，实际可做下拉 */
+            .logo { flex-grow: 1; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">CS毕设辅导中心</div>
+                <ul class="nav-links">
+                    <li><a href="#home">首页</a></li>
+                    <li><a href="#projects">精选案例</a></li>
+                    <li><a href="#services">服务流程</a></li>
+                    <li><a href="#contact">联系我们</a></li>
+                </ul>
+                <a href="#contact" class="btn">立即咨询</a>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero" id="home">
+        <div class="container">
+            <h1>让毕业设计变得简单高效</h1>
+            <p>海量计算机专业毕设源码参考，专业导师一对一辅导。<br>无论是 Java, Python, 还是 Vue/React，我们都能助你顺利通过答辩。</p>
+            <a href="#projects" class="btn">浏览项目案例</a>
+        </div>
+    </section>
+
+    <section class="features" id="services">
+        <div class="container">
+            <h2 class="section-title">我们的服务</h2>
+            <p class="section-subtitle">从选题到答辩，全流程技术支持</p>
+            <div class="feature-grid">
+                <div class="feature-item">
+                    <span class="feature-icon">💻</span>
+                    <h3>源码 + 数据库</h3>
+                    <p>提供完整可运行的项目源码和数据库脚本，结构清晰，注释详细，方便二次开发。</p>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">📝</span>
+                    <h3>文档/论文指导</h3>
+                    <p>提供配套的开发文档、开题报告参考，辅导论文写作思路与格式排版。</p>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">🛠️</span>
+                    <h3>远程调试与讲解</h3>
+                    <p>遇到报错不用慌，远程协助环境搭建与部署，并提供代码逻辑讲解服务。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="projects" id="projects">
+        <div class="container">
+            <h2 class="section-title">精选毕设案例</h2>
+            <p class="section-subtitle">涵盖 Java SSM/SpringBoot, Python Django/Flask, Vue 等主流技术栈</p>
+            
+            <div class="project-grid">
+                <div class="project-card">
+                    <div class="card-img-placeholder">
+                        <span>商城系统截图</span>
+                    </div>
+                    <div class="card-content">
+                        <span class="tag">Java SpringBoot</span>
+                        <h3 class="card-title">基于SpringBoot的在线商城系统</h3>
+                        <p class="card-desc">包含用户端商品浏览、购物车、订单管理，以及后台管理员商品上下架、数据统计功能。</p>
+                        <div class="card-footer">
+                            <a href="#contact" class="btn-outline">咨询详情</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="card-img-placeholder" style="background-color: #e0e7ff; color: #4338ca;">
+                        <span>图书管理系统截图</span>
+                    </div>
+                    <div class="card-content">
+                        <span class="tag">Vue + Node.js</span>
+                        <h3 class="card-title">高校图书借阅管理系统</h3>
+                        <p class="card-desc">前后端分离架构，实现图书检索、借阅归还、逾期提醒及可视化数据大屏展示。</p>
+                        <div class="card-footer">
+                            <a href="#contact" class="btn-outline">咨询详情</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="card-img-placeholder" style="background-color: #dcfce7; color: #15803d;">
+                        <span>人脸识别截图</span>
+                    </div>
+                    <div class="card-content">
+                        <span class="tag">Python OpenCV</span>
+                        <h3 class="card-title">基于OpenCV的门禁考勤系统</h3>
+                        <p class="card-desc">利用Python深度学习库进行人脸检测与识别，自动记录考勤数据并导出报表。</p>
+                        <div class="card-footer">
+                            <a href="#contact" class="btn-outline">咨询详情</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="card-img-placeholder" style="background-color: #ffedd5; color: #c2410c;">
+                        <span>小程序截图</span>
+                    </div>
+                    <div class="card-content">
+                        <span class="tag">微信小程序</span>
+                        <h3 class="card-title">校园二手交易小程序</h3>
+                        <p class="card-desc">为大学生打造的闲置物品交易平台，支持发布商品、私信聊天、分类搜索功能。</p>
+                        <div class="card-footer">
+                            <a href="#contact" class="btn-outline">咨询详情</a>
+                        </div>
+                    </div>
+                </div>
+                 <div class="project-card">
+                    <div class="card-img-placeholder" style="background-color: #f3e8ff; color: #7e22ce;">
+                        <span>医院挂号截图</span>
+                    </div>
+                    <div class="card-content">
+                        <span class="tag">Java SSM</span>
+                        <h3 class="card-title">医院在线预约挂号系统</h3>
+                        <p class="card-desc">经典的SSM框架开发，包含科室管理、医生排班、患者预约、缴费记录等完整模块。</p>
+                        <div class="card-footer">
+                            <a href="#contact" class="btn-outline">咨询详情</a>
+                        </div>
+                    </div>
+                </div>
+                 <div class="project-card">
+                    <div class="card-img-placeholder" style="background-color: #fce7f3; color: #be185d;">
+                        <span>推荐算法截图</span>
+                    </div>
+                    <div class="card-content">
+                        <span class="tag">Python 爬虫+分析</span>
+                        <h3 class="card-title">电影数据分析与推荐系统</h3>
+                        <p class="card-desc">爬取豆瓣/IMDB数据，进行清洗分析，并基于协同过滤算法为用户推荐感兴趣的电影。</p>
+                        <div class="card-footer">
+                            <a href="#contact" class="btn-outline">咨询详情</a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section class="contact" id="contact">
+        <div class="container">
+            <h2>遇到难题？立即联系导师</h2>
+            <p style="margin-bottom: 30px; color: #d1d5db;">我们提供 1对1 答疑，无论是选题困惑还是代码报错，随时为您解答。</p>
+            
+            <div class="contact-box">
+                <div class="contact-info">
+                    微信咨询：<span class="contact-highlight">CS_BS_2024</span> (点击复制)
+                </div>
+                <div class="contact-info">
+                    QQ 咨询：<span class="contact-highlight">12345678</span>
+                </div>
+                <div class="contact-info">
+                    电子邮箱：<span class="contact-highlight">help@example.com</span>
+                </div>
+                <p style="margin-top: 20px; font-size: 0.9rem; color: #9ca3af;">
+                    *备注：添加时请注明“毕设咨询”
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 CS毕设辅导中心. All Rights Reserved. 仅供学习参考，请勿用于商业用途。</p>
+        </div>
+    </footer>
+
+    <script>
+        // 平滑滚动效果
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // 这里可以添加点击复制微信号的功能
+        const contactHighlight = document.querySelector('.contact-highlight');
+        if(contactHighlight){
+            contactHighlight.addEventListener('click', () => {
+                const text = contactHighlight.innerText;
+                navigator.clipboard.writeText(text).then(() => {
+                    alert('微信号 ' + text + ' 已复制到剪贴板！');
+                }).catch(err => {
+                    console.error('复制失败', err);
+                });
+            });
+        }
+    </script>
 </body>
 </html>
