@@ -284,7 +284,7 @@
                 <h3>核心 API 详解</h3>
                 
                 <div class="api-method">
-                    <div class="method-signature">int ReadFileImageList(string folderPath)</div>
+                    <div class="method-signature">JsImage.ReadFileImageList(string folderPath)</div>
                     <div class="method-description">从指定文件夹中读取支持格式的图像列表，支持的格式包括：BMP、PNG、JPEG、TIFF、GIF</div>
                     <div class="param-table">
                         <table>
@@ -341,7 +341,7 @@
                 </div>
                 
                 <div class="api-method">
-                    <div class="method-signature">void ClearImageList()</div>
+                    <div class="method-signature">JsImage.ClearImageList()</div>
                     <div class="method-description">清除当前存储在内存中的图像列表</div>
                     <div class="param-table">
                         <table>
@@ -370,7 +370,7 @@
                 </div>
                 
                 <div class="api-method">
-                    <div class="method-signature">Bitmap GetNextImage()</div>
+                    <div class="method-signature">JsImage.GetNextImage()</div>
                     <div class="method-description">从图像列表中获取下一个图像，当到达列表末尾时会循环回到开头</div>
                     <div class="param-table">
                         <table>
@@ -402,7 +402,7 @@
                 </div>
                 
                 <div class="api-method">
-                    <div class="method-signature">Bitmap ReadImage(string filePath)</div>
+                    <div class="method-signature">JsImage.ReadImage(string filePath)</div>
                     <div class="method-description">读取指定路径的单个图像文件，支持多种图像格式</div>
                     <div class="param-table">
                         <table>
@@ -434,7 +434,7 @@
                 </div>
                 
                 <div class="api-method">
-                    <div class="method-signature">bool SaveImage(Bitmap image, string filePath)</div>
+                    <div class="method-signature">JsImage.SaveImage(Bitmap image, string filePath)</div>
                     <div class="method-description">将给定的图像对象保存到指定路径，自动根据文件扩展名确定保存格式</div>
                     <div class="param-table">
                         <table>
@@ -495,10 +495,9 @@
             <div class="api-section">
                 <h3>完整使用示例</h3>
                 <div class="example-code">
-// 1. 创建 JsImage 实例<br>
-const jsImage = new JsImage();<br><br>
 
-// 2. 读取文件夹中的所有图像<br>
+
+// 读取文件夹中的所有图像<br>
 const result = jsImage.ReadFileImageList(<span class="example-string">'./images/test_samples'</span>);<br>
 if(result &gt;= 0) {<br>
 &nbsp;&nbsp;console.log(<span class="example-string">`成功加载 ${result} 个图像`</span>);<br>

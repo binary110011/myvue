@@ -365,19 +365,15 @@ Version=1.0
                 <h3>使用示例</h3>
                 <div class="example-code">
 // 创建日志实例<br>
-<span class="example-keyword">const</span> logger = <span class="example-keyword">new</span> JsLog();<br><br>
+
 // 常规操作记录<br>
 logger.info(<span class="example-string">"系统初始化完成"</span>);<br>
 logger.info(<span class="example-string">`图像加载成功: ${imageWidth}x${imageHeight} 像素`</span>);<br><br>
 // 警告场景<br>
 logger.warning(<span class="example-string">"检测到低置信度匹配 (75.3%)"</span>);<br><br>
 // 错误处理<br>
-<span class="example-keyword">try</span> {<br>
-&nbsp;&nbsp;<span class="example-comment">// 执行图像处理操作</span><br>
-&nbsp;&nbsp;<span class="example-keyword">const</span> result = processImage(image);<br>
-} <span class="example-keyword">catch</span> (error) {<br>
-&nbsp;&nbsp;logger.error(<span class="example-string">`图像处理失败: ${error.message}`</span>);<br>
-}<br><br>
+
+logger.error(<span class="example-string">`图像处理失败: ${error.message}`</span>);<br>
 // 调试信息（开发阶段）<br>
 logger.debug(<span class="example-string">`边缘检测参数: threshold=${threshold}, minLineLength=${minLineLength}`</span>);
                 </div>
