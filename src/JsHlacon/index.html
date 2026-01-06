@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CVScript - JavaScript + Halcon 计算机视觉平台</title>
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --success: #4cc9f0;
+            --dark: #1d3557;
+            --light: #f8f9fa;
+            --gray: #6c757d;
+            --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --border-radius: 12px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e7f1 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            margin-bottom: 30px;
+            border-bottom: 1px solid rgba(67, 97, 238, 0.2);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 20px;
+        }
+        
+        .logo-text {
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(to right, var(--primary), var(--dark));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .logo-subtitle {
+            font-size: 16px;
+            color: var(--gray);
+            margin-top: 2px;
+        }
+        
+        .main-nav {
+            display: flex;
+            list-style: none;
+            gap: 25px;
+        }
+        
+        .main-nav a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 600;
+            font-size: 18px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .main-nav a:hover {
+            color: var(--primary);
+        }
+        
+        .main-nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background: var(--primary);
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+        
+        .main-nav a:hover::after {
+            width: 100%;
+        }
+        
+        .hero {
+            text-align: center;
+            padding: 60px 20px;
+            margin-bottom: 50px;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 8px;
+            background: linear-gradient(90deg, var(--primary), var(--success));
+        }
+        
+        .hero h1 {
+            font-size: 42px;
+            margin-bottom: 20px;
+            color: var(--dark);
+            background: linear-gradient(to right, var(--primary), var(--dark));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .hero p {
+            font-size: 20px;
+            color: #555;
+            max-width: 800px;
+            margin: 0 auto 30px;
+            line-height: 1.7;
+        }
+        
+        .highlight {
+            background: linear-gradient(120deg, rgba(67, 97, 238, 0.15), rgba(76, 201, 240, 0.15));
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-weight: 600;
+        }
+        
+        .features {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            flex-wrap: wrap;
+            margin-top: 40px;
+        }
+        
+        .feature-card {
+            flex: 1;
+            min-width: 250px;
+            max-width: 300px;
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 25px;
+            box-shadow: var(--card-shadow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+        }
+        
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            color: white;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        
+        .feature-card h3 {
+            font-size: 22px;
+            margin-bottom: 15px;
+            color: var(--dark);
+        }
+        
+        .modules-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+        
+        .module-card {
+            background: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: block;
+            color: inherit;
+        }
+        
+        .module-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.15);
+        }
+        
+        .module-header {
+            padding: 20px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+        }
+        
+        .module-header h3 {
+            font-size: 22px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .module-icon {
+            font-size: 24px;
+            background: rgba(255, 255, 255, 0.2);
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .module-content {
+            padding: 25px;
+        }
+        
+        .module-content p {
+            color: #555;
+            margin-bottom: 15px;
+        }
+        
+        .module-tag {
+            display: inline-block;
+            background: rgba(67, 97, 238, 0.1);
+            color: var(--primary);
+            padding: 4px 10px;
+            border-radius: 5px;
+            font-size: 14px;
+            margin-right: 8px;
+            margin-bottom: 8px;
+        }
+        
+        .module-features {
+            margin-top: 15px;
+        }
+        
+        .module-features li {
+            font-size: 15px;
+            color: #666;
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+        
+        .module-features li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--success);
+            font-weight: bold;
+        }
+        
+        .modules-section {
+            margin: 50px 0;
+        }
+        
+        .section-title {
+            font-size: 28px;
+            margin-bottom: 30px;
+            text-align: center;
+            color: var(--dark);
+            position: relative;
+        }
+        
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 4px;
+            background: var(--primary);
+            margin: 15px auto 0;
+            border-radius: 2px;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 60px;
+            padding: 30px 0;
+            color: var(--gray);
+            font-size: 16px;
+            border-top: 1px solid rgba(0, 0, 0, 0.08);
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 32px;
+            }
+            
+            .hero p {
+                font-size: 18px;
+            }
+            
+            .main-nav {
+                gap: 15px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .main-nav a {
+                font-size: 16px;
+                padding: 6px 10px;
+            }
+            
+            .modules-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* 扩展区域 - 未来模块可以在这里添加样式 */
+        .future-modules {
+            margin-top: 40px;
+            text-align: center;
+            padding: 30px;
+            background: rgba(67, 97, 238, 0.05);
+            border-radius: var(--border-radius);
+            border: 2px dashed rgba(67, 97, 238, 0.3);
+        }
+        
+        .future-modules h3 {
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+        
+        .future-modules p {
+            color: var(--gray);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .add-module-btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 25px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        
+        .add-module-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <div class="logo-icon">CV</div>
+                <div>
+                    <div class="logo-text">CVScript</div>
+                    <div class="logo-subtitle">JavaScript + Halcon 计算机视觉平台</div>
+                </div>
+            </div>
+            <nav>
+                <ul class="main-nav">
+                    <li><a href="index.html">首页</a></li>
+                    <li><a href="docs.html">文档</a></li>
+                    <li><a href="examples.html">示例</a></li>
+                    <li><a href="download.html">下载</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <section class="hero">
+            <h1>JavaScript + Halcon 计算机视觉开发平台</h1>
+            <p>无需重新编译即可扩展功能！在记事本中编写<span class="highlight">JavaScript</span>脚本，直接调用<span class="highlight">Halcon</span>算法库，实现灵活的计算机视觉应用开发</p>
+            <div class="features">
+                <div class="feature-card">
+                    <div class="feature-icon">H+</div>
+                    <h3>Halcon 集成</h3>
+                    <p>无缝集成 MVTec Halcon 20+ 算法库，支持图像处理、模式识别、3D视觉等高级功能</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">JS</div>
+                    <h3>JavaScript 引擎</h3>
+                    <p>基于 Jint 引擎，支持在 C# 环境中执行 JavaScript，实现逻辑层与算法分离</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>热重载扩展</h3>
+                    <p>无需重新编译生成 .exe，修改脚本后立即生效，大幅提高开发效率和灵活性</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="modules-section">
+            <h2 class="section-title">核心模块</h2>
+            <div class="modules-container">
+                <!-- 模块1: JsLog -->
+                <a href="modules/jslog.html" class="module-card">
+                    <div class="module-header">
+                        <h3><span class="module-icon">📝</span> JsLog</h3>
+                    </div>
+                    <div class="module-content">
+                        <p>强大的日志记录系统，用于调试和监控视觉处理流程</p>
+                        <div class="module-features">
+                            <ul>
+                                <li>多级别日志记录（Debug, Info, Warning, Error）</li>
+                                <li>实时日志查看器</li>
+                                <li>日志文件自动归档</li>
+                                <li>性能分析标记</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <span class="module-tag">调试</span>
+                            <span class="module-tag">监控</span>
+                            <span class="module-tag">性能</span>
+                        </div>
+                    </div>
+                </a>
+                
+                <!-- 模块2: JsImage -->
+                <a href="modules/jsimage.html" class="module-card">
+                    <div class="module-header">
+                        <h3><span class="module-icon">🖼️</span> JsImage</h3>
+                    </div>
+                    <div class="module-content">
+                        <p>完整的图像处理工具包，提供 Halcon 算法的 JavaScript 封装</p>
+                        <div class="module-features">
+                            <ul>
+                                <li>图像加载/保存/转换</li>
+                                <li>预处理（滤波、增强、校正）</li>
+                                <li>特征提取与匹配</li>
+                                <li>测量与检测工具</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <span class="module-tag">图像处理</span>
+                            <span class="module-tag">特征提取</span>
+                            <span class="module-tag">测量</span>
+                        </div>
+                    </div>
+                </a>
+                
+                <!-- 模块3: JsVision - 示例占位 -->
+            <a href="modules/jsFindCircleToolPlus.html" class="module-card">
+    <div class="module-header">
+        <h3><span class="module-icon">🔍⬤</span> jsFindCircleToolPlus</h3>
+    </div>
+    <div class="module-content">
+        <p>基于Halcon的圆形查找工具，提供高精度圆形检测功能</p>
+        <div class="module-features">
+            <ul>
+                <li>图像文件读取</li>
+                <li>圆形模型创建</li>
+                <li>圆心与半径检测</li>
+                <li>工业视觉定位</li>
+            </ul>
+        </div>
+        <div>
+            <span class="module-tag">圆形检测</span>
+            <span class="module-tag">几何测量</span>
+            <span class="module-tag">Halcon</span>
+        </div>
+    </div>
+</a>
+                
+    <!-- JsPatternToolPlus 模块卡片 -->
+<a href="modules/JsPatternToolPlus.html" class="module-card">
+    <div class="module-header">
+        <h3><span class="module-icon">🔍📐</span> JsPatternToolPlus</h3>
+    </div>
+    <div class="module-content">
+        <p>模板匹配工具封装，实现高精度图像匹配与定位</p>
+        <div class="module-features">
+            <ul>
+                <li>模板模型创建</li>
+                <li>位置与角度识别</li>
+                <li>匹配得分评估</li>
+                <li>坐标仿射变换</li>
+            </ul>
+        </div>
+        <div>
+            <span class="module-tag">模板匹配</span>
+            <span class="module-tag">定位识别</span>
+            <span class="module-tag">坐标转换</span>
+        </div>
+    </div>
+</a>
+
+<a href="modules/JsFindLineToolPlus.html" class="module-card">
+    <div class="module-header">
+        <h3><span class="module-icon">🔍📐</span> JsFindLineToolPlus</h3>
+    </div>
+    <div class="module-content">
+        <p>找线工具</p>
+        <div class="module-features">
+            <ul>
+                <li>创建直线查找模型</li>
+                <li>执行直线查找操作</li>
+                <li>获取直线查找工具的ROI区域参数</li>
+                <li>找到的直线角度</li>
+            </ul>
+        </div>
+        <div>
+            <span class="module-tag">模板匹配</span>
+            <span class="module-tag">定位识别</span>
+            <span class="module-tag">坐标转换</span>
+        </div>
+    </div>
+</a>
+
+<a href="modules/JsHalcon.html" class="module-card">
+    <div class="module-header">
+        <h3><span class="module-icon">🔍📐</span> JsHalcon</h3>
+    </div>
+    <div class="module-content">
+        <p>Halcon工具</p>
+        <div class="module-features">
+            <ul>
+                <li>计算两条线段的交点</li>
+                <li>坐标变换</li>
+                <li>直线的新位图图像</li>
+                <li>绘制十字标记</li>
+				 <li>图像上绘制圆形</li>
+            </ul>
+        </div>
+        <div>
+            <span class="module-tag">图像存储</span>
+            <span class="module-tag">图像绘制</span>
+            <span class="module-tag">坐标转换</span>
+        </div>
+    </div>
+</a>
+            
+            <!-- 未来模块扩展区域 -->
+            <div class="future-modules">
+                <h3>即将推出的模块</h3>
+                <p>平台将持续扩展更多功能模块。您可以通过创建新的 HTML 文件并添加到导航中来扩展平台功能。</p>
+                <a href="#" class="add-module-btn">添加新模块</a>
+            </div>
+        </section>
+
+
+        <footer>
+            <p>CVScript © 2026 计算机视觉开发平台 | 基于 C# + Halcon + Jint 技术栈</p>
+            <p>无需重新编译 · 脚本驱动开发 · 无限扩展可能</p>
+        </footer>
+    </div>
+
+    <script>
+        // 为"添加新模块"按钮添加功能（示例）
+        document.querySelector('.add-module-btn').addEventListener('click', function(e) {
+            e.preventDefault();
+            alert('添加新模块：\n1. 在 modules/ 目录创建新 HTML 文件\n2. 在主页添加新模块卡片\n3. 无需重新编译，刷新页面即可看到新模块');
+        });
+        
+        // 为所有模块卡片添加悬停效果
+        document.querySelectorAll('.module-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.boxShadow = '0 12px 40px rgba(67, 97, 238, 0.25)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.boxShadow = var(--card-shadow);
+            });
+        });
+    </script>
+</body>
+</html>
