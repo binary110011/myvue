@@ -337,7 +337,7 @@
                 </div>
                 
                 <div class="api-method">
-                    <div class="method-signature">void ReadImage(string ImagePaht)</div>
+                    <div class="method-signature">jsFindCircleToolPlus.ReadImage(string ImagePaht)</div>
                     <div class="method-description">从指定路径读取图像文件，并将其存储在内部变量中</div>
                     <div class="param-table">
                         <table>
@@ -366,7 +366,7 @@
                 </div>
                 
                 <div class="api-method">
-                    <div class="method-signature">void CreateModel(string str_Name_Machine)</div>
+                    <div class="method-signature">jsFindCircleToolPlus.CreateModel(string str_Name_Machine)</div>
                     <div class="method-description">为指定的机器/工具名称创建圆形查找模型</div>
                     <div class="param-table">
                         <table>
@@ -398,7 +398,7 @@
                 </div>
 
                 <div class="api-method">
-                    <div class="method-signature">object Run(string str_Name_Machine, Bitmap bitmap)</div>
+                    <div class="method-signature">jsFindCircleToolPlus.Run(string str_Name_Machine, Bitmap bitmap)</div>
                     <div class="method-description">在指定的位图图像上执行圆形查找，并返回检测结果</div>
                     <div class="param-table">
                         <table>
@@ -477,23 +477,22 @@
             <div class="api-section">
                 <h3>完整使用示例</h3>
                 <div class="example-code">
-// 1. 创建 jsFindCircleToolPlus 实例<br>
-const circleTool = new jsFindCircleToolPlus();<br><br>
 
-// 2. 读取参考图像用于创建模型<br>
+
+//读取参考图像用于创建模型<br>
 circleTool.ReadImage(<span class="example-string">'./reference/circle_sample.bmp'</span>);<br><br>
 
-// 3. 为特定工具创建模型<br>
+//为特定工具创建模型<br>
 // 这里"MyCircleDetector"是工具的唯一标识符<br>
 circleTool.CreateModel(<span class="example-string">'MyCircleDetector'</span>);<br><br>
 
-// 4. 读取待检测图像<br>
+// 读取待检测图像<br>
 const testImage = new Bitmap(<span class="example-string">'./test/test_image.bmp'</span>);<br><br>
 
-// 5. 执行圆形检测<br>
+//  执行圆形检测<br>
 const result = circleTool.Run(<span class="example-string">'MyCircleDetector'</span>, testImage);<br><br>
 
-// 6. 处理检测结果<br>
+//  处理检测结果<br>
 if(result.res === 0) {<br>
 &nbsp;&nbsp;// 检测成功<br>
 &nbsp;&nbsp;console.log(<span class="example-string">'检测成功!'</span>);<br>
