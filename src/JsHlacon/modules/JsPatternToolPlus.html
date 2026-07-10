@@ -280,68 +280,11 @@
             
             <div class="api-section">
                 <h3>核心 API 详解</h3>
-                
-                <div class="api-method">
-                    <div class="method-signature">constructor JsPatternToolPlus()</div>
-                    <div class="method-description">初始化 JsPatternToolPlus 实例，创建视觉助手对象</div>
-                    <div class="param-table">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>参数</th>
-                                    <th>类型</th>
-                                    <th>描述</th>
-                                    <th>必填</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>无</td>
-                                    <td>-</td>
-                                    <td>-</td>
-                                    <td>-</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="return-section">
-                        <div class="return-title">返回值:</div>
-                        <p>无返回值，但会初始化内部 VisionHelper 实例</p>
-                    </div>
-                </div>
-                
-                <div class="api-method">
-                    <div class="method-signature">void ReadImage(string ImagePaht)</div>
-                    <div class="method-description">从指定路径读取图像文件，并将其存储在内部变量中</div>
-                    <div class="param-table">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>参数名</th>
-                                    <th>类型</th>
-                                    <th>描述</th>
-                                    <th>必填</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>ImagePaht</td>
-                                    <td>string</td>
-                                    <td>图像文件的完整路径，支持Halcon支持的所有图像格式</td>
-                                    <td>是</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="return-section">
-                        <div class="return-title">返回值:</div>
-                        <p>无返回值(void)，图像被加载到内部 image 变量中用于后续操作</p>
-                    </div>
-                </div>
-                
+       
+ 
                 <div class="api-method">
                     <div class="method-signature">void CreateModel(string str_Name_Machine)</div>
-                    <div class="method-description">为指定的机器/工具名称创建模板匹配模型</div>
+                    <div class="method-description">为指定的机器/工具名称创建模板匹配模型 。改方法为C#内部接口调用</div>
                     <div class="param-table">
                         <table>
                             <thead>
@@ -371,9 +314,11 @@
                     </div>
                 </div>
 
+         
+
                 <div class="api-method">
-                    <div class="method-signature">object Run(string str_Name_Machine)</div>
-                    <div class="method-description">在内部存储的图像上执行模板匹配，并返回检测结果</div>
+                    <div class="method-signature">JsPatternToolPlus.Run(string str_Name_Machine, Bitmap bmp)</div>
+                    <div class="method-description">在指定的位图图像上执行模板匹配，并返回检测结果</div>
                     <div class="param-table">
                         <table>
                             <thead>
@@ -391,13 +336,19 @@
                                     <td>唯一标识符，用于指定要使用的模板匹配工具实例</td>
                                     <td>是</td>
                                 </tr>
+                                <tr>
+                                    <td>bmp</td>
+                                    <td>Bitmap</td>
+                                    <td>System.Drawing.Bitmap 类型的输入图像，在此图像上执行模板匹配</td>
+                                    <td>是</td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
                     <div class="return-section">
                         <div class="return-title">返回值:</div>
-                        <p>返回一个 Dictionary&lt;string, object&gt; 类型的对象，包含以下键值对：</p>
-                        <div class="param-table">
+                        <p>返回一个 Dictionary&lt;string, object&gt; 类型的对象，包含的键值对与 Run(string) 方法相同</p>
+                             <div class="param-table">
                             <table>
                                 <thead>
                                     <tr>
@@ -447,137 +398,10 @@
                     </div>
                 </div>
 
-                <div class="api-method">
-                    <div class="method-signature">object Run(string str_Name_Machine, Bitmap bmp)</div>
-                    <div class="method-description">在指定的位图图像上执行模板匹配，并返回检测结果</div>
-                    <div class="param-table">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>参数名</th>
-                                    <th>类型</th>
-                                    <th>描述</th>
-                                    <th>必填</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>str_Name_Machine</td>
-                                    <td>string</td>
-                                    <td>唯一标识符，用于指定要使用的模板匹配工具实例</td>
-                                    <td>是</td>
-                                </tr>
-                                <tr>
-                                    <td>bmp</td>
-                                    <td>Bitmap</td>
-                                    <td>System.Drawing.Bitmap 类型的输入图像，在此图像上执行模板匹配</td>
-                                    <td>是</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="return-section">
-                        <div class="return-title">返回值:</div>
-                        <p>返回一个 Dictionary&lt;string, object&gt; 类型的对象，包含的键值对与 Run(string) 方法相同</p>
-                        <div class="error-code">
-                            <strong>注意:</strong> 此方法不使用 ReadImage 加载的内部图像，而是直接使用传入的位图进行匹配
-                        </div>
-                    </div>
-                </div>
-
-                <div class="api-method">
-                    <div class="method-signature">object AffineTransPixel(string str_Name_Machine, double in_PatternTool_Row, double in_PatternTool_Column, double in_PatternTool_Angle, double RowBegin, double Column)</div>
-                    <div class="method-description">使用仿射变换转换像素坐标，根据模板匹配结果调整坐标系。常用于将模板坐标系中的点转换到实际图像坐标系中</div>
-                    <div class="param-table">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>参数名</th>
-                                    <th>类型</th>
-                                    <th>描述</th>
-                                    <th>必填</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>str_Name_Machine</td>
-                                    <td>string</td>
-                                    <td>机器/工具名称，用于获取模板匹配工具实例</td>
-                                    <td>是</td>
-                                </tr>
-                                <tr>
-                                    <td>in_PatternTool_Row</td>
-                                    <td>double</td>
-                                    <td>输入的模板匹配结果行坐标（目标位置）</td>
-                                    <td>是</td>
-                                </tr>
-                                <tr>
-                                    <td>in_PatternTool_Column</td>
-                                    <td>double</td>
-                                    <td>输入的模板匹配结果列坐标（目标位置）</td>
-                                    <td>是</td>
-                                </tr>
-                                <tr>
-                                    <td>in_PatternTool_Angle</td>
-                                    <td>double</td>
-                                    <td>输入的模板匹配结果角度（目标角度）</td>
-                                    <td>是</td>
-                                </tr>
-                                <tr>
-                                    <td>RowBegin</td>
-                                    <td>double</td>
-                                    <td>要转换的起始行坐标（基准坐标系中的点）</td>
-                                    <td>是</td>
-                                </tr>
-                                <tr>
-                                    <td>Column</td>
-                                    <td>double</td>
-                                    <td>要转换的列坐标（基准坐标系中的点）</td>
-                                    <td>是</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="return-section">
-                        <div class="return-title">返回值:</div>
-                        <p>返回一个 Dictionary&lt;string, object&gt; 类型的对象，包含以下键值对：</p>
-                        <div class="param-table">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>键名</th>
-                                        <th>类型</th>
-                                        <th>描述</th>
-                                        <th>条件</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>"res"</td>
-                                        <td>int</td>
-                                        <td>执行结果代码：0 表示成功，-2 表示转换失败</td>
-                                        <td>总是存在</td>
-                                    </tr>
-                                    <tr>
-                                        <td>"Row"</td>
-                                        <td>double</td>
-                                        <td>转换后的行坐标</td>
-                                        <td>仅当 res=0 时存在</td>
-                                    </tr>
-                                    <tr>
-                                        <td>"Column"</td>
-                                        <td>double</td>
-                                        <td>转换后的列坐标</td>
-                                        <td>仅当 res=0 时存在</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="error-code">
-                            <strong>错误处理:</strong> 当转换失败时（res=-2），错误信息会被记录到系统日志中，格式为："坐标 跟随模板失败：[str_Name_Machine] -2"
-                        </div>
-                    </div>
-                </div>
+    
+					
+	
+			  </div>
             </div>
             
             <div class="api-section">
@@ -586,61 +410,39 @@
 // 示例1: 基本模板匹配流程<br>
 // ====================================<br><br>
 
-// 1. 创建 JsPatternToolPlus 实例<br>
-const patternTool = new JsPatternToolPlus();<br><br>
+// 读取待检测图像<br>
+const testImage =  JsImage.ReadImage(<span class="example-string">'./test/test_image.bmp'</span>);<br><br>
 
-// 2. 读取参考图像用于创建模板<br>
-patternTool.ReadImage(<span class="example-string">'./reference/template.bmp'</span>);<br><br>
 
-// 3. 为特定工具创建模板模型<br>
-// 这里"ChipDetector"是工具的唯一标识符<br>
-patternTool.CreateModel(<span class="example-string">'ChipDetector'</span>);<br><br>
 
-// 4. 读取待检测图像<br>
-const testImage = new Bitmap(<span class="example-string">'./test/test_chip.bmp'</span>);<br><br>
 
-// 5. 执行模板匹配<br>
+
+
+
 const result = patternTool.Run(<span class="example-string">'ChipDetector'</span>, testImage);<br><br>
 
-// 6. 处理匹配结果<br>
+
 if(result.res === 0) {<br>
 &nbsp;&nbsp;// 匹配成功<br>
-&nbsp;&nbsp;console.log(<span class="example-string">'模板匹配成功!'</span>);<br>
-&nbsp;&nbsp;console.log(<span class="example-string">'模板中心坐标 (X, Y): ('</span> + result.Column.toFixed(2) + <span class="example-string">', '</span> + result.Row.toFixed(2) + <span class="example-string">')'</span>);<br>
-&nbsp;&nbsp;console.log(<span class="example-string">'旋转角度: '</span> + result.Angle.toFixed(4) + <span class="example-string">' 弧度'</span>);<br>
-&nbsp;&nbsp;console.log(<span class="example-string">'匹配得分: '</span> + result.Score.toFixed(4));<br>
+&nbsp;&nbsp;JsLog.info(<span class="example-string">'模板匹配成功!'</span>);<br>
+&nbsp;&nbsp;JsLog.info(<span class="example-string">'模板中心坐标 (X, Y): ('</span> + result.Column.toFixed(2) + <span class="example-string">', '</span> + result.Row.toFixed(2) + <span class="example-string">')'</span>);<br>
+&nbsp;&nbsp;JsLog.info(<span class="example-string">'旋转角度: '</span> + result.Angle.toFixed(4) + <span class="example-string">' 弧度'</span>);<br>
+&nbsp;&nbsp;JsLog.info(<span class="example-string">'匹配得分: '</span> + result.Score.toFixed(4));<br>
 &nbsp;&nbsp;<br>
 &nbsp;&nbsp;// 通常高于0.7的得分表示良好匹配<br>
 &nbsp;&nbsp;if(result.Score > 0.7) {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;console.log(<span class="example-string">'匹配质量: 优秀'</span>);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;JsLog.info(<span class="example-string">'匹配质量: 优秀'</span>);<br>
 &nbsp;&nbsp;} else if(result.Score > 0.5) {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;console.log(<span class="example-string">'匹配质量: 良好'</span>);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;JsLog.info(<span class="example-string">'匹配质量: 良好'</span>);<br>
 &nbsp;&nbsp;} else {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;console.log(<span class="example-string">'匹配质量: 较差，建议重新检查'</span>);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;JsLog.info(<span class="example-string">'匹配质量: 较差，建议重新检查'</span>);<br>
 &nbsp;&nbsp;}<br>
 } else {<br>
 &nbsp;&nbsp;// 匹配失败<br>
 &nbsp;&nbsp;console.error(<span class="example-string">'模板匹配失败! 错误代码: '</span> + result.res);<br>
 }<br><br>
-
-// 示例2: 坐标仿射变换应用<br>
-// ====================================<br>
-// 当你需要在模板坐标系中定义检测点，然后根据实际匹配结果<br>
-// 转换到图像坐标系时使用<br><br>
-
-// 假设在模板图像中，有一个感兴趣的点位于 (150, 200)<br>
-const templateRow = 150;<br>
-const templateCol = 200;<br><br>
-
-// 获取当前匹配结果<br>
-const matchResult = patternTool.Run(<span class="example-string">'ChipDetector'</span>, testImage);<br><br>
-
-if(matchResult.res === 0) {<br>
-&nbsp;&nbsp;// 使用仿射变换将模板坐标转换为实际图像坐标<br>
-&nbsp;&nbsp;const transformResult = patternTool.AffineTransPixel(<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="example-string">'ChipDetector'</span>,<br>
-&nbsp;&nbsp;&nbsp;&nbsp;matchResult.Row,&nbsp;&nbsp;&nbsp;&nbsp;// 当前匹配的行坐标<br>
-&nbsp;&nbsp;&nbsp;&nbsp;matchResult.Column,&nbsp;&nbsp;// 当前匹配的列坐标<br>
-&nbsp;&nbsp;&nbsp;&nbsp;matchResult.Angle,&nbsp;&nbsp;&nbsp;// 当前匹配的角度<br>
-&nbsp;&nbsp;&nbsp;&nbsp;templateRow,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 模板中的点-行坐标<br>
-&nbsp;&nbsp;&nbsp;&nbsp;templateCol&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 模板中的点-
+           
+       <footer>
+            <p>CVScript © 2026 计算机视觉开发平台 | 基于 C# + Halcon + Jint 技术栈</p>
+            <p>无需重新编译 · 脚本驱动开发 · 无限扩展可能</p>
+        </footer>
