@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BEC 高级词汇精选 · 查阅器</title>
+<style>
+  :root{
+    --bg1:#eef2ff; --bg2:#f8fafc;
+    --card:#ffffff; --ink:#1e293b; --muted:#64748b;
+    --line:#e2e8f0; --accent:#4f46e5; --accent-soft:#eef2ff;
+    --pos:#0ea5e9; --posbg:#e0f2fe; --src:#f59e0b; --srcbg:#fef3c7;
+    --shadow:0 1px 3px rgba(15,23,42,.08),0 8px 24px rgba(15,23,42,.06);
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",
+      "PingFang SC","Microsoft YaHei",Roboto,Helvetica,Arial,sans-serif;
+    color:var(--ink); background:linear-gradient(160deg,var(--bg1),var(--bg2));
+    min-height:100vh;
+  }
+  header{
+    position:sticky; top:0; z-index:20; backdrop-filter:blur(10px);
+    background:rgba(255,255,255,.82); border-bottom:1px solid var(--line);
+    padding:14px 20px 10px;
+  }
+  .title-row{display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; margin-bottom:10px}
+  h1{font-size:20px; margin:0; letter-spacing:.3px}
+  .sub{color:var(--muted); font-size:13px}
+  .controls{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
+  .search{
+    flex:1 1 240px; min-width:200px; position:relative;
+  }
+  .search input{
+    width:100%; padding:10px 12px 10px 34px; border:1px solid var(--line);
+    border-radius:10px; font-size:14px; background:#fff; color:var(--ink);
+    outline:none; transition:.15s;
+  }
+  .search input:focus{border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-soft)}
+  .search svg{position:absolute; left:10px; top:50%; transform:translateY(-50%); color:var(--muted)}
+  select{
+    padding:10px 12px; border:1px solid var(--line); border-radius:10px;
+    background:#fff; font-size:14px; color:var(--ink); cursor:pointer; outline:none;
+  }
+  select:focus{border-color:var(--accent)}
+  .src-bar{display:flex; gap:8px; flex-wrap:wrap; margin-top:10px}
+  .chip{
+    border:1px solid var(--line); background:#fff; color:var(--muted);
+    padding:6px 12px; border-radius:999px; font-size:13px; cursor:pointer;
+    transition:.15s; user-select:none;
+  }
+  .chip:hover{border-color:var(--accent); color:var(--accent)}
+  .chip.active{background:var(--accent); color:#fff; border-color:var(--accent)}
+  .alpha{display:flex; gap:4px; flex-wrap:wrap; margin-top:10px}
+  .alpha button{
+    width:30px; height:30px; border:1px solid var(--line); background:#fff;
+    border-radius:8px; cursor:pointer; font-size:12px; color:var(--muted);
+  }
+  .alpha button:hover{border-color:var(--accent); color:var(--accent)}
+  .alpha button.active{background:var(--accent); color:#fff; border-color:var(--accent)}
+  main{max-width:1200px; margin:0 auto; padding:18px 20px 60px}
+  .stat{color:var(--muted); font-size:13px; margin:6px 2px 14px}
+  .grid{
+    display:grid; gap:14px;
+    grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+  }
+  .card{
+    background:var(--card); border:1px solid var(--line); border-radius:14px;
+    padding:16px 16px 14px; box-shadow:var(--shadow);
+    display:flex; flex-direction:column; gap:8px; position:relative;
+    transition:transform .12s, box-shadow .12s;
+  }
+  .card:hover{transform:translateY(-2px); box-shadow:0 4px 10px rgba(15,23,42,.1),0 16px 36px rgba(15,23,42,.08)}
+  .card .top{display:flex; align-items:flex-start; justify-content:space-between; gap:8px}
+  .word{font-size:19px; font-weight:700; line-height:1.2; word-break:break-word}
+  .pron{
+    border:1px solid var(--line); background:var(--accent-soft); color:var(--accent);
+    border-radius:8px; font-size:12px; padding:5px 9px; cursor:pointer; white-space:nowrap;
+    transition:.15s; flex:none;
+  }
+  .pron:hover{background:var(--accent); color:#fff}
+  .badges{display:flex; gap:6px; flex-wrap:wrap; align-items:center}
+  .pos{
+    font-size:12px; font-weight:600; color:var(--pos); background:var(--posbg);
+    padding:2px 8px; border-radius:6px;
+  }
+  .no{font-size:12px; color:var(--muted)}
+  .meaning{font-size:14px; line-height:1.6; color:#334155}
+  .src{font-size:11px; color:var(--src); background:var(--srcbg); padding:2px 7px; border-radius:6px; align-self:flex-start}
+  .empty{text-align:center; color:var(--muted); padding:60px 0; font-size:15px}
+  footer{text-align:center; color:var(--muted); font-size:12px; padding:20px}
+  @media(max-width:520px){ .grid{grid-template-columns:1fr} }
+</style>
+</head>
+<body>
+<header>
+  <div class="title-row">
+    <h1>BEC 高级词汇精选 · 查阅器</h1>
+    <span class="sub" id="sub"></span>
+  </div>
+  <div class="controls">
+    <div class="search">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input id="q" type="text" placeholder="搜索英文单词或中文释义…" autocomplete="off">
+    </div>
+    <select id="sort">
+      <option value="no">排序：原序</option>
+      <option value="word">排序：单词 A→Z</option>
+    </select>
+    <a href="src/practice.html" style="border:1px solid var(--accent);background:var(--accent);color:#fff;padding:10px 16px;border-radius:10px;font-size:14px;text-decoration:none;white-space:nowrap">情景练习 →</a>
+  </div>
+  <div class="src-bar" id="srcBar"></div>
+  <div class="alpha" id="alpha"></div>
+</header>
+
+<main>
+  <div class="stat" id="stat"></div>
+  <div class="grid" id="grid"></div>
+  <div class="empty" id="empty" style="display:none">没有匹配的单词。</div>
+</main>
+
+<footer>数据由 3 个 PDF 提取 · 共 <span id="total"></span> 条 · 点击「发音」可朗读英文</footer>
+
+<script src="vocab-data.js"></script>
+<script>
+(function(){
+  var DATA = window.VOCAB_DATA || {words:[], sources:[], total:0};
+  var words = DATA.words || [];
+  var sources = DATA.sources || [];
+
+  var qEl = document.getElementById('q');
+  var sortEl = document.getElementById('sort');
+  var srcBar = document.getElementById('srcBar');
+  var alpha = document.getElementById('alpha');
+  var grid = document.getElementById('grid');
+  var stat = document.getElementById('stat');
+  var empty = document.getElementById('empty');
+
+  document.getElementById('total').textContent = DATA.total || words.length;
+  document.getElementById('sub').textContent = '来自 ' + sources.length + ' 个文档';
+
+  var activeSrc = 'all';
+  var activeLetter = 'all';
+
+  // source chips
+  var allChip = mkChip('all', '全部文档 (' + words.length + ')');
+  srcBar.appendChild(allChip);
+  sources.forEach(function(s, i){
+    srcBar.appendChild(mkChip(s.label, '文档' + (i+1) + ' (' + s.count + ')'));
+  });
+  function mkChip(val, text){
+    var b = document.createElement('span');
+    b.className = 'chip' + (val === 'all' ? ' active' : '');
+    b.textContent = text;
+    b.dataset.val = val;
+    b.onclick = function(){
+      activeSrc = val;
+      [].forEach.call(srcBar.children, function(c){ c.classList.toggle('active', c.dataset.val === val); });
+      render();
+    };
+    return b;
+  }
+
+  // alphabet index
+  var letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+  var allA = document.createElement('button');
+  allA.textContent = '全部'; allA.dataset.l = 'all'; allA.className = 'active';
+  allA.onclick = function(){ setLetter('all'); };
+  alpha.appendChild(allA);
+  letters.forEach(function(L){
+    var b = document.createElement('button');
+    b.textContent = L; b.dataset.l = L;
+    b.onclick = function(){ setLetter(L); };
+    alpha.appendChild(b);
+  });
+  function setLetter(L){
+    activeLetter = L;
+    [].forEach.call(alpha.children, function(c){ c.classList.toggle('active', c.dataset.l === L); });
+    render();
+  }
+
+  qEl.addEventListener('input', render);
+  sortEl.addEventListener('change', render);
+
+  function speak(text){
+    if(!('speechSynthesis' in window)) return;
+    var u = new SpeechSynthesisUtterance(text);
+    u.lang = 'en-US'; u.rate = 0.95;
+    window.speechSynthesis.speak(u);
+  }
+
+  function esc(s){
+    return String(s).replace(/[&<>"]/g, function(c){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];
+    });
+  }
+
+  function render(){
+    var q = qEl.value.trim().toLowerCase();
+    var list = words.filter(function(w){
+      if(activeSrc !== 'all' && w.source !== activeSrc) return false;
+      if(activeLetter !== 'all' && (w.word[0]||'').toUpperCase() !== activeLetter) return false;
+      if(q){
+        var hay = (w.word + ' ' + w.meaning + ' ' + w.pos).toLowerCase();
+        if(hay.indexOf(q) === -1) return false;
+      }
+      return true;
+    });
+
+    if(sortEl.value === 'word'){
+      list.sort(function(a,b){ return a.word.localeCompare(b.word); });
+    } else {
+      list.sort(function(a,b){ return a.no - b.no; });
+    }
+
+    stat.textContent = '显示 ' + list.length + ' / ' + words.length + ' 个单词';
+    grid.innerHTML = '';
+    empty.style.display = list.length ? 'none' : 'block';
+
+    var frag = document.createDocumentFragment();
+    list.forEach(function(w){
+      var card = document.createElement('div');
+      card.className = 'card';
+      var top = document.createElement('div'); top.className = 'top';
+      var word = document.createElement('div'); word.className = 'word'; word.textContent = w.word;
+      var pron = document.createElement('button'); pron.className = 'pron'; pron.textContent = '发音';
+      pron.onclick = function(){ speak(w.word); };
+      top.appendChild(word); top.appendChild(pron);
+
+      var badges = document.createElement('div'); badges.className = 'badges';
+      if(w.pos){
+        var p = document.createElement('span'); p.className = 'pos'; p.textContent = w.pos; badges.appendChild(p);
+      }
+      var n = document.createElement('span'); n.className = 'no'; n.textContent = '#' + w.no; badges.appendChild(n);
+
+      var mean = document.createElement('div'); mean.className = 'meaning'; mean.textContent = w.meaning;
+
+      var src = document.createElement('span'); src.className = 'src'; src.textContent = w.source;
+
+      card.appendChild(top); card.appendChild(badges); card.appendChild(mean); card.appendChild(src);
+      frag.appendChild(card);
+    });
+    grid.appendChild(frag);
+  }
+
+  render();
+})();
+</script>
+</body>
+</html>

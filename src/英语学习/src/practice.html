@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BEC 词汇 · 情景练习</title>
+<style>
+  :root{
+    --bg:#f1f5f9; --card:#fff; --ink:#1e293b; --muted:#64748b; --line:#e2e8f0;
+    --accent:#4f46e5; --accent-soft:#eef2ff; --tw:#7c3aed; --twbg:#f5f3ff;
+    --right:#16a34a; --wrong:#dc2626;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",Roboto,Arial,sans-serif;
+    color:var(--ink);background:var(--bg);min-height:100vh}
+  header{position:sticky;top:0;z-index:30;background:rgba(255,255,255,.9);backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);padding:10px 16px}
+  .hrow{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  h1{font-size:18px;margin:0}
+  .score{font-size:13px;color:var(--muted)}
+  .spacer{flex:1}
+  .tabs{display:flex;gap:8px;overflow-x:auto;margin-top:10px;padding-bottom:4px}
+  .tab{border:1px solid var(--line);background:#fff;color:var(--muted);padding:7px 13px;border-radius:999px;
+    font-size:13px;white-space:nowrap;cursor:pointer}
+  .tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .tbtn2{border:1px solid var(--line);background:#fff;color:var(--accent);padding:7px 13px;border-radius:999px;
+    font-size:13px;cursor:pointer;white-space:nowrap}
+  .tbtn2:hover{border-color:var(--accent)}
+  main{max-width:900px;margin:0 auto;padding:18px 16px 80px}
+  .para{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:16px;
+    box-shadow:0 1px 3px rgba(15,23,42,.05)}
+  .en{font-size:17px;line-height:2;color:#0f172a}
+  .tw{color:var(--tw);background:var(--twbg);border-bottom:2px solid var(--tw);cursor:pointer;
+    padding:0 2px;border-radius:4px;font-weight:600}
+  .tw:hover{filter:brightness(.97)}
+  .bar{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
+  .tbtn{border:1px solid var(--line);background:#fff;color:var(--accent);padding:7px 14px;border-radius:9px;
+    font-size:13px;cursor:pointer}
+  .tbtn:hover{border-color:var(--accent);background:var(--accent-soft)}
+  .zh{margin-top:12px;font-size:15px;line-height:2;color:#334155;background:#f8fafc;border-radius:10px;padding:12px 14px;
+    border:1px dashed var(--line)}
+  .qbox{margin-top:14px}
+  .quiz{border:1px solid var(--line);border-radius:12px;padding:14px;background:#fcfcff}
+  .quiz-q{font-size:15px;line-height:1.8;margin-bottom:10px;color:#0f172a}
+  .quiz-q .blank{display:inline-block;min-width:60px;border-bottom:2px solid var(--accent);text-align:center;color:var(--accent);font-weight:700}
+  .opts{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+  .opt{border:1px solid var(--line);background:#fff;padding:11px;border-radius:10px;font-size:15px;cursor:pointer;
+    text-align:left;color:var(--ink)}
+  .opt:hover{border-color:var(--accent)}
+  .opt.right{background:#dcfce7;border-color:var(--right);color:#14532d}
+  .opt.wrong{background:#fee2e2;border-color:var(--wrong);color:#7f1d1d}
+  .explain{margin-top:12px;font-size:14px;line-height:1.9;color:#334155;background:#fff7ed;border:1px solid #fed7aa;
+    border-radius:10px;padding:12px 14px}
+  /* word popup */
+  #popup{position:absolute;z-index:50;width:300px;background:#fff;border:1px solid var(--line);border-radius:14px;
+    box-shadow:0 10px 30px rgba(15,23,42,.18);padding:16px;display:none}
+  #popup.show{display:block}
+  #popup .pw{font-size:20px;font-weight:700;color:var(--tw)}
+  #popup .phon{font-size:14px;color:var(--muted);margin:2px 0 6px}
+  #popup .pp{display:inline-block;font-size:12px;color:#0ea5e9;background:#e0f2fe;padding:2px 8px;border-radius:6px;margin-bottom:8px}
+  #popup .pm{font-size:14px;line-height:1.8;color:#334155}
+  #popup .pbar{display:flex;gap:8px;margin-top:12px}
+  #popup .pbar button{flex:1;border:1px solid var(--line);background:#fff;border-radius:8px;padding:7px;font-size:13px;cursor:pointer;color:var(--accent)}
+  #popup .pbar button:hover{background:var(--accent-soft)}
+  /* drawer */
+  #drawer{position:fixed;top:0;right:0;height:100%;width:340px;max-width:88vw;background:#fff;border-left:1px solid var(--line);
+    box-shadow:-10px 0 30px rgba(15,23,42,.12);transform:translateX(100%);transition:.25s;z-index:40;display:flex;flex-direction:column}
+  #drawer.open{transform:translateX(0)}
+  .dh{padding:14px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}
+  .dh h3{margin:0;font-size:15px}
+  .dbody{padding:14px 16px;overflow-y:auto;flex:1}
+  .lookup{display:flex;gap:8px;margin-bottom:10px}
+  .lookup input{flex:1;padding:9px 11px;border:1px solid var(--line);border-radius:9px;font-size:14px;outline:none}
+  .lookup input:focus{border-color:var(--accent)}
+  .lookup button{border:1px solid var(--accent);background:var(--accent);color:#fff;border-radius:9px;padding:0 14px;cursor:pointer;font-size:14px}
+  .lres{border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:14px;font-size:14px;line-height:1.8;display:none}
+  .lres .lw{font-weight:700;color:var(--tw)}
+  .lres .lphon{color:var(--muted);font-size:13px}
+  .lres .ldef{margin-top:6px;color:#334155}
+  .lres .lbtn{margin-top:10px;border:1px solid var(--accent);background:#fff;color:var(--accent);border-radius:8px;padding:6px 12px;cursor:pointer;font-size:13px}
+  .wbhead{display:flex;gap:8px;align-items:center;margin:6px 0 10px}
+  .wbhead h4{margin:0;font-size:14px;flex:1}
+  .wbhead button{border:1px solid var(--line);background:#fff;border-radius:8px;padding:6px 10px;font-size:12px;cursor:pointer;color:var(--muted)}
+  .wbhead button:hover{border-color:var(--accent);color:var(--accent)}
+  .wbitem{border:1px solid var(--line);border-radius:9px;padding:9px 11px;margin-bottom:8px;font-size:13px}
+  .wbitem .ww{font-weight:600;color:var(--tw)}
+  .wbitem .wp{color:var(--muted);font-size:12px}
+  .wbitem .wd{color:#475569;margin-top:3px;line-height:1.6}
+  .wbitem .wdel{float:right;color:var(--wrong);cursor:pointer;font-size:12px;border:none;background:none}
+  .empty{color:var(--muted);font-size:13px;text-align:center;padding:20px 0}
+  .overlay{position:fixed;inset:0;background:rgba(15,23,42,.25);z-index:35;display:none}
+  .overlay.show{display:block}
+  a.back{color:var(--muted);font-size:13px;text-decoration:none}
+  @media(max-width:560px){ .opts{grid-template-columns:1fr} }
+</style>
+</head>
+<body>
+<header>
+  <div class="hrow">
+    <h1>BEC 词汇 · 情景练习</h1>
+    <span class="score" id="score">测验：0 / 0</span>
+    <span class="spacer"></span>
+    <a class="back" href="../index.html">← 查词表</a>
+    <button class="tbtn2" id="openDrawer">生词本 / 查词</button>
+  </div>
+  <div class="tabs" id="tabs"></div>
+</header>
+
+<main id="main"></main>
+
+<div id="popup">
+  <div class="pw" id="pw"></div>
+  <div class="phon" id="phon"></div>
+  <span class="pp" id="pp"></span>
+  <div class="pm" id="pm"></div>
+  <div class="pbar">
+    <button id="speakBtn">朗读</button>
+    <button id="closePop">关闭</button>
+  </div>
+</div>
+
+<div class="overlay" id="overlay"></div>
+<div id="drawer">
+  <div class="dh">
+    <h3>查词 · 生词本</h3>
+    <button class="tbtn2" id="closeDrawer" style="padding:5px 10px">关闭</button>
+  </div>
+  <div class="dbody">
+    <div class="lookup">
+      <input id="lk" type="text" placeholder="查任意英文单词（非目标词）">
+      <button id="lkBtn">查</button>
+    </div>
+    <div class="lres" id="lres">
+      <div><span class="lw" id="lrw"></span> <span class="lphon" id="lrphon"></span></div>
+      <div class="ldef" id="lrdef"></div>
+      <button class="lbtn" id="lrAdd">收藏到生词本</button>
+    </div>
+    <div class="wbhead">
+      <h4>我的生词本</h4>
+      <button id="expBtn">导出</button>
+      <button id="impBtn">导入</button>
+      <button id="clrBtn">清空</button>
+    </div>
+    <input type="file" id="impFile" accept="application/json" style="display:none">
+    <div id="wblist"></div>
+  </div>
+</div>
+
+<script src="vocab-data.js"></script>
+<script src="scenarios.js"></script>
+<script>
+(function(){
+  var SCEN = window.SCENARIOS || [];
+  var VDATA = window.VOCAB_DATA || {words:[]};
+  var VMAP = {};
+  VDATA.words.forEach(function(w){ if(!VMAP[w.word]) VMAP[w.word] = {pos:w.pos, meaning:w.meaning}; });
+
+  var PHON = {}; // cache word->phonetic
+  try { PHON = JSON.parse(localStorage.getItem('bec_phon')||'{}'); } catch(e){}
+  function savePhon(){ try{ localStorage.setItem('bec_phon', JSON.stringify(PHON)); }catch(e){} }
+
+  var myWords = [];
+  try { myWords = JSON.parse(localStorage.getItem('bec_mywords')||'[]'); } catch(e){}
+  function saveWords(){ try{ localStorage.setItem('bec_mywords', JSON.stringify(myWords)); }catch(e){} }
+
+  var score = {correct:0, total:0};
+  function updateScore(){ document.getElementById('score').textContent = '测验：'+score.correct+' / '+score.total; }
+
+  // ---------- dictionary API ----------
+  function fetchDict(word){
+    return fetch('https://api.dictionaryapi.dev/api/v2/entries/en/'+encodeURIComponent(word))
+      .then(function(r){ if(!r.ok) throw 0; return r.json(); })
+      .then(function(d){
+        var phon='', def='';
+        if(Array.isArray(d) && d[0]){
+          phon = d[0].phonetic || '';
+          if(!phon && d[0].phonetics){ var ph=d[0].phonetics.filter(function(x){return x.text;})[0]; if(ph) phon=ph.text; }
+          var m=d[0].meanings;
+          if(m && m[0] && m[0].definitions && m[0].definitions[0]) def=m[0].definitions[0].definition;
+        }
+        return {phon:phon, def:def};
+      });
+  }
+  function fetchPhon(word){
+    if(PHON[word]!=null) return Promise.resolve(PHON[word]);
+    return fetchDict(word).then(function(r){ PHON[word]=r.phon||''; savePhon(); return PHON[word]; })
+      .catch(function(){ return ''; });
+  }
+
+  // ---------- word popup ----------
+  var popup = document.getElementById('popup');
+  document.getElementById('closePop').onclick = function(){ popup.classList.remove('show'); };
+  document.getElementById('speakBtn').onclick = function(){
+    var w = document.getElementById('pw').textContent;
+    if('speechSynthesis' in window){ var u=new SpeechSynthesisUtterance(w); u.lang='en-US'; speechSynthesis.speak(u); }
+  };
+  document.addEventListener('click', function(e){
+    if(popup.classList.contains('show') && !popup.contains(e.target) && !(e.target.classList&&e.target.classList.contains('tw')))
+      popup.classList.remove('show');
+  });
+  function showWord(word, el){
+    var info = VMAP[word] || {pos:'', meaning:'(词典未收录该目标词)'};
+    document.getElementById('pw').textContent = word;
+    document.getElementById('pp').textContent = info.pos || '';
+    document.getElementById('pp').style.display = info.pos ? 'inline-block' : 'none';
+    document.getElementById('pm').textContent = info.meaning;
+    document.getElementById('phon').textContent = '音标加载中…';
+    fetchPhon(word).then(function(p){ document.getElementById('phon').textContent = p ? '/'+p+'/' : '（音标需联网获取）'; });
+    popup.classList.add('show');
+    var r = el.getBoundingClientRect();
+    var top = window.scrollY + r.bottom + 6;
+    var left = window.scrollX + r.left;
+    if(left + 320 > window.scrollX + window.innerWidth) left = window.scrollX + window.innerWidth - 320;
+    popup.style.top = top + 'px';
+    popup.style.left = Math.max(8, left) + 'px';
+  }
+
+  // ---------- quiz ----------
+  function renderQuiz(para, container){
+    var q = para.quiz; if(!q) return;
+    var box = document.createElement('div'); box.className='quiz';
+    var h = document.createElement('div'); h.className='quiz-q';
+    h.innerHTML = q.sent.replace('_____', '<span class="blank">_____</span>');
+    var opts = document.createElement('div'); opts.className='opts';
+    q.options.forEach(function(op, i){
+      var b=document.createElement('button'); b.className='opt'; b.textContent=op;
+      b.onclick=function(){
+        if(box.dataset.done) return;
+        box.dataset.done='1';
+        var correct = (i===q.answer);
+        b.classList.add(correct?'right':'wrong');
+        [].forEach.call(opts.children, function(c,idx){ if(idx===q.answer) c.classList.add('right'); });
+        var ex=document.createElement('div'); ex.className='explain'; ex.textContent='解析：'+q.explain;
+        box.appendChild(ex);
+        score.total++; if(correct) score.correct++; updateScore();
+      };
+      opts.appendChild(b);
+    });
+    box.appendChild(h); box.appendChild(opts);
+    container.appendChild(box);
+  }
+
+  // ---------- paragraph ----------
+  function renderPara(para){
+    var block=document.createElement('section'); block.className='para';
+    var en=document.createElement('div'); en.className='en'; en.innerHTML=para.en;
+    [].forEach.call(en.querySelectorAll('.tw'), function(span){
+      span.addEventListener('click', function(e){ e.stopPropagation(); showWord(span.dataset.w, span); });
+    });
+    var bar=document.createElement('div'); bar.className='bar';
+    var tbtn=document.createElement('button'); tbtn.className='tbtn'; tbtn.textContent='显示译文';
+    var zh=document.createElement('div'); zh.className='zh'; zh.style.display='none'; zh.textContent=para.zh;
+    tbtn.onclick=function(){
+      var show = zh.style.display==='none';
+      zh.style.display = show?'block':'none';
+      tbtn.textContent = show?'隐藏译文':'显示译文';
+    };
+    bar.appendChild(tbtn);
+
+    var qbox=null, qbtn=null;
+    if(para.quiz){
+      qbtn=document.createElement('button'); qbtn.className='tbtn'; qbtn.textContent='本节测验';
+      qbox=document.createElement('div'); qbox.className='qbox'; qbox.style.display='none';
+      qbtn.onclick=function(){
+        var show=qbox.style.display==='none';
+        qbox.style.display=show?'block':'none';
+        qbtn.textContent=show?'收起测验':'本节测验';
+        if(show && !qbox.dataset.built){ renderQuiz(para,qbox); qbox.dataset.built='1'; }
+      };
+      bar.appendChild(qbtn);
+    }
+    block.appendChild(en); block.appendChild(bar); block.appendChild(zh);
+    if(qbox) block.appendChild(qbox);
+    return block;
+  }
+
+  // ---------- theme tabs ----------
+  var tabs=document.getElementById('tabs');
+  var main=document.getElementById('main');
+  function loadTheme(idx){
+    popup.classList.remove('show');
+    main.innerHTML='';
+    var s=SCEN[idx];
+    var head=document.createElement('div'); head.style.cssText='color:var(--muted);font-size:13px;margin:2px 2px 14px';
+    head.textContent='主题：'+s.title+' · 共 '+s.count+' 个目标词 · 点击高亮词看释义，先读英文再点译文';
+    main.appendChild(head);
+    s.paragraphs.forEach(function(p){ main.appendChild(renderPara(p)); });
+    window.scrollTo(0,0);
+  }
+  SCEN.forEach(function(s,i){
+    var t=document.createElement('div'); t.className='tab'+(i===0?' active':'');
+    t.textContent=s.title+' ('+s.count+')';
+    t.onclick=function(){ [].forEach.call(tabs.children,function(c){c.classList.remove('active');}); t.classList.add('active'); loadTheme(i); };
+    tabs.appendChild(t);
+  });
+  if(SCEN.length) loadTheme(0);
+
+  // ---------- drawer / lookup / collection ----------
+  var drawer=document.getElementById('drawer'), overlay=document.getElementById('overlay');
+  function openD(){ drawer.classList.add('open'); overlay.classList.add('show'); }
+  function closeD(){ drawer.classList.remove('open'); overlay.classList.remove('show'); }
+  document.getElementById('openDrawer').onclick=openD;
+  document.getElementById('closeDrawer').onclick=closeD;
+  overlay.onclick=closeD;
+
+  var lk=document.getElementById('lk'), lres=document.getElementById('lres');
+  var lastLookup=null;
+  function doLookup(){
+    var w=lk.value.trim(); if(!w) return;
+    lres.style.display='block';
+    document.getElementById('lrw').textContent=w;
+    document.getElementById('lrphon').textContent='查询中…';
+    document.getElementById('lrdef').textContent='';
+    fetchDict(w).then(function(r){
+      document.getElementById('lrphon').textContent = r.phon ? '/'+r.phon+'/' : '（无音标）';
+      document.getElementById('lrdef').textContent = r.def || '（未找到英文释义，可手动记录）';
+      lastLookup={word:w, phon:r.phon, def:r.def};
+    }).catch(function(){
+      document.getElementById('lrphon').textContent='（查询失败，需联网）';
+      document.getElementById('lrdef').textContent='无法获取释义，可手动收藏记录。';
+      lastLookup={word:w, phon:'', def:''};
+    });
+  }
+  document.getElementById('lkBtn').onclick=doLookup;
+  lk.addEventListener('keydown',function(e){ if(e.key==='Enter') doLookup(); });
+  document.getElementById('lrAdd').onclick=function(){
+    if(!lastLookup) return;
+    if(myWords.some(function(x){return x.word.toLowerCase()===lastLookup.word.toLowerCase();})){ alert('已在生词本中'); return; }
+    myWords.push(lastLookup); saveWords(); renderWB();
+  };
+
+  function renderWB(){
+    var list=document.getElementById('wblist'); list.innerHTML='';
+    if(!myWords.length){ list.innerHTML='<div class="empty">还没有收藏。查词后点“收藏到生词本”。</div>'; return; }
+    myWords.forEach(function(x,i){
+      var d=document.createElement('div'); d.className='wbitem';
+      d.innerHTML='<button class="wdel" data-i="'+i+'">删除</button>'+
+        '<div class="ww">'+esc(x.word)+'</div>'+
+        (x.phon?'<div class="wp">/'+esc(x.phon)+'/'+'</div>':'')+
+        (x.def?'<div class="wd">'+esc(x.def)+'</div>':'');
+      list.appendChild(d);
+    });
+    [].forEach.call(list.querySelectorAll('.wdel'), function(b){
+      b.onclick=function(){ myWords.splice(+b.dataset.i,1); saveWords(); renderWB(); };
+    });
+  }
+  function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+
+  document.getElementById('expBtn').onclick=function(){
+    var blob=new Blob([JSON.stringify(myWords,null,2)],{type:'application/json'});
+    var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='my-words.json'; a.click();
+  };
+  document.getElementById('impBtn').onclick=function(){ document.getElementById('impFile').click(); };
+  document.getElementById('impFile').onchange=function(e){
+    var f=e.target.files[0]; if(!f) return;
+    var rd=new FileReader();
+    rd.onload=function(){ try{ var arr=JSON.parse(rd.result); if(Array.isArray(arr)){ arr.forEach(function(x){ if(x.word && !myWords.some(function(y){return y.word.toLowerCase()===x.word.toLowerCase();})) myWords.push(x); }); saveWords(); renderWB(); } }catch(err){ alert('导入失败：不是有效的生词本 JSON'); } };
+    rd.readAsText(f); e.target.value='';
+  };
+  document.getElementById('clrBtn').onclick=function(){ if(confirm('确定清空生词本？')){ myWords=[]; saveWords(); renderWB(); } };
+
+  renderWB();
+  updateScore();
+})();
+</script>
+</body>
+</html>
