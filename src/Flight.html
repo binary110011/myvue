@@ -386,6 +386,9 @@
             let audioEnabled = true;
             let shootTimer = 0;
             let shootInterval = 15; // 自动发射间隔（帧数）
+            let animationFrameId = null;
+            let stageTransitionPending = false;
+            let stageTransitionTimeoutId = null;
             
             // 音效
             const audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -494,7 +497,11 @@
                         gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
                         break;
                 }
-                
+
+                oscillator.addEventListener('ended', () => {
+                    oscillator.disconnect();
+                    gainNode.disconnect();
+                }, { once: true });
                 oscillator.start();
                 oscillator.stop(audioContext.currentTime + duration);
             }
@@ -539,6 +546,10 @@
             
             // 重新开始游戏
             restartBtn.addEventListener('click', function() {
+                if (animationFrameId !== null) {
+                    cancelAnimationFrame(animationFrameId);
+                    animationFrameId = null;
+                }
                 resetGame();
                 gameOverScreen.style.display = 'none';
                 gameRunning = true;
@@ -1114,20 +1125,27 @@
                     document.body.removeChild(upgradeNotification);
                 }
                 
-                upgradeNotification = document.createElement('div');
-                upgradeNotification.className = 'upgrade-notification';
-                upgradeNotification.textContent = '等级提升!';
-                document.body.appendChild(upgradeNotification);
-                
+                const notification = document.createElement('div');
+                notification.className = 'upgrade-notification';
+                notification.textContent = '等级提升!';
+                document.body.appendChild(notification);
+                upgradeNotification = notification;
+
                 setTimeout(() => {
-                    upgradeNotification.style.opacity = '1';
+                    if (notification.isConnected) {
+                        notification.style.opacity = '1';
+                    }
                 }, 10);
-                
+
                 setTimeout(() => {
-                    upgradeNotification.style.opacity = '0';
+                    if (notification.isConnected) {
+                        notification.style.opacity = '0';
+                    }
                     setTimeout(() => {
-                        if (upgradeNotification && upgradeNotification.parentNode) {
-                            document.body.removeChild(upgradeNotification);
+                        if (notification.parentNode) {
+                            notification.parentNode.removeChild(notification);
+                        }
+                        if (upgradeNotification === notification) {
                             upgradeNotification = null;
                         }
                     }, 500);
@@ -1140,20 +1158,27 @@
                     document.body.removeChild(bossPhaseNotification);
                 }
                 
-                bossPhaseNotification = document.createElement('div');
-                bossPhaseNotification.className = 'boss-phase';
-                bossPhaseNotification.textContent = message;
-                document.body.appendChild(bossPhaseNotification);
-                
+                const notification = document.createElement('div');
+                notification.className = 'boss-phase';
+                notification.textContent = message;
+                document.body.appendChild(notification);
+                bossPhaseNotification = notification;
+
                 setTimeout(() => {
-                    bossPhaseNotification.style.opacity = '1';
+                    if (notification.isConnected) {
+                        notification.style.opacity = '1';
+                    }
                 }, 10);
-                
+
                 setTimeout(() => {
-                    bossPhaseNotification.style.opacity = '0';
+                    if (notification.isConnected) {
+                        notification.style.opacity = '0';
+                    }
                     setTimeout(() => {
-                        if (bossPhaseNotification && bossPhaseNotification.parentNode) {
-                            document.body.removeChild(bossPhaseNotification);
+                        if (notification.parentNode) {
+                            notification.parentNode.removeChild(notification);
+                        }
+                        if (bossPhaseNotification === notification) {
                             bossPhaseNotification = null;
                         }
                     }, 500);
@@ -1162,16 +1187,22 @@
             
             // 显示关卡过渡
             function showStageTransition() {
+                // 达成过关条件后的几秒内仍可能击毁敌机，避免重复创建计时器，
+                // 否则一次过关会连续跳过多个关卡并重复生成 BOSS。
+                if (stageTransitionPending) return;
+                stageTransitionPending = true;
                 stageTransition.style.display = 'flex';
                 nextStageElement.textContent = stage + 1;
-                
-                setTimeout(() => {
+
+                stageTransitionTimeoutId = setTimeout(() => {
                     stageTransition.style.display = 'none';
                     stage++;
                     stageElement.textContent = stage;
                     enemiesDefeated = 0;
                     enemyLevel++;
-                    
+                    stageTransitionPending = false;
+                    stageTransitionTimeoutId = null;
+
                     if (stage % 3 === 0) {
                         spawnBoss();
                     }
@@ -1180,6 +1211,7 @@
             
             // 检查碰撞
             function checkCollision(obj1, obj2) {
+                if (!obj1 || !obj2) return false;
                 return obj1.x < obj2.x + obj2.width &&
                        obj1.x + obj1.width > obj2.x &&
                        obj1.y < obj2.y + obj2.height &&
@@ -1329,7 +1361,11 @@
                         continue;
                     }
                     
-                    if (bullet.y > canvas.height || bullet.x < 0 || bullet.x > canvas.width) {
+                    // 环形/瞄准弹可能向上或斜向飞出画面，四个方向都要清理。
+                    if (bullet.y > canvas.height + bullet.height ||
+                        bullet.y < -bullet.height ||
+                        bullet.x < -bullet.width ||
+                        bullet.x > canvas.width + bullet.width) {
                         enemyBullets.splice(i, 1);
                     }
                 }
@@ -1380,15 +1416,19 @@
                 
                 // 检查子弹与敌机碰撞
                 for (let i = bullets.length - 1; i >= 0; i--) {
+                    const bullet = bullets[i];
+                    let bulletConsumed = false;
+
                     for (let j = enemies.length - 1; j >= 0; j--) {
                         const enemy = enemies[j];
                         if (enemy.invisible) continue;
-                        
-                        if (checkCollision(bullets[i], enemy)) {
+
+                        if (checkCollision(bullet, enemy)) {
                             if (!enemy.shieldActive) {
                                 enemy.health -= playerDamage;
                             }
                             bullets.splice(i, 1);
+                            bulletConsumed = true;
                             if (enemy.health <= 0) {
                                 createExplosion(enemy.x + enemy.width / 2, enemy.y + enemy.height / 2);
                                 if (Math.random() < 0.3) {
@@ -1415,8 +1455,11 @@
                             break;
                         }
                     }
-                    
-                    if (boss && checkCollision(bullets[i], boss)) {
+
+                    // 子弹命中敌机后已经从数组移除，不能再读取 bullets[i]。
+                    // 原逻辑在 BOSS 战击中小怪时会把 undefined 传给碰撞检测，
+                    // 抛出异常后 requestAnimationFrame 链条中断，表现为游戏卡死。
+                    if (!bulletConsumed && boss && checkCollision(bullet, boss)) {
                         if (!boss.shieldActive) {
                             boss.health -= playerDamage;
                         }
@@ -1587,6 +1630,10 @@
             // 游戏结束
             function gameOver() {
                 gameRunning = false;
+                if (animationFrameId !== null) {
+                    cancelAnimationFrame(animationFrameId);
+                    animationFrameId = null;
+                }
                 finalScoreElement.textContent = score;
                 gameOverScreen.style.display = 'flex';
             }
@@ -1607,6 +1654,13 @@
                 bossActive = false;
                 enemiesDefeated = 0;
                 shootTimer = 0;
+
+                if (stageTransitionTimeoutId !== null) {
+                    clearTimeout(stageTransitionTimeoutId);
+                    stageTransitionTimeoutId = null;
+                }
+                stageTransitionPending = false;
+                stageTransition.style.display = 'none';
                 
                 scoreElement.textContent = score;
                 levelElement.textContent = level;
@@ -1632,8 +1686,9 @@
             // 游戏主循环
             function gameLoop() {
                 if (!gameRunning) return;
-                
+
                 update();
+                if (!gameRunning) return;
                 draw();
                 
                 // 根据关卡调整敌机生成频率
@@ -1644,7 +1699,7 @@
                     spawnEnemy();
                 }
                 
-                requestAnimationFrame(gameLoop);
+                animationFrameId = requestAnimationFrame(gameLoop);
             }
             
             // 启动游戏

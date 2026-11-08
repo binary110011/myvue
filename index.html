@@ -310,6 +310,25 @@
             display: block;
         }
         
+        /* 海报通知 */
+        .poster-ad {
+            bottom: 30px;
+            left: 30px;
+            right: auto;
+        }
+
+        .poster-ad img {
+            max-height: 200px;
+            object-fit: contain;
+            background: #0a0e27;
+            cursor: zoom-in;
+        }
+
+        .poster-ad .ad-link:focus-visible {
+            outline: 3px solid #fff;
+            outline-offset: 4px;
+        }
+
         /* 响应式 */
         @media (max-width: 768px) {
             .header h1 { font-size: 2.5em; }
@@ -319,6 +338,11 @@
                 right: 15px; 
                 bottom: 400px;
                 padding: 20px;
+            }
+            .poster-ad {
+                bottom: 15px;
+                left: 15px;
+                right: auto;
             }
         }
         
@@ -411,6 +435,13 @@
                 <div class="card-description">Business English Vocabulary & Practice</div>
                 <span class="card-status status-active">✓ 运行中</span>
             </a>
+			
+			            <a href="http://43.136.96.57" class="converter-card active">
+                <div class="card-icon">🖥️ </div>
+                <div class="card-title">设备数据采集与管理系统(DDAMS)</div>
+                <div class="card-description">集中管理设备档案，实时监控设备状态，汇集运行日志、让每一条采集数据都有明确的设备来源。</div>
+                <span class="card-status status-active">✓ 运行中</span>
+            </a>
         </div>
         
         <div class="footer">
@@ -429,6 +460,14 @@
         alt="招聘信息"
     >
 </a>
+    </div>
+    <div class="fixed-ad poster-ad">
+        <p>🖼️ OPTO 科学家海报</p>
+        <p>点击海报查看原图 ↓</p>
+        <a href="./img/haibao.jpg" class="ad-link" target="_blank" rel="noopener"
+           aria-label="在新标签页查看 OPTO 科学家海报原图">
+            <img src="./img/haibao.jpg" alt="OPTO 科学家海报" width="550" height="771">
+        </a>
     </div>
 </body>
 </html>
